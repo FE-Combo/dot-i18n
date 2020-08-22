@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "module": "esnext",
+    "target": "es5",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "jsx": "react",
+    "lib": ["es2017", "dom"],
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "noImplicitAny": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "esModuleInterop": true,
+    "inlineSources": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "typeRoots": ["./src/global.d.ts"]
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules", "./i18n-store.js"]
+}

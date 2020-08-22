@@ -1,0 +1,40 @@
+{
+  "name": "dot-i18n",
+  "version": "0.0.1",
+  "description": "Multilingual solution.",
+  "index": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "node ./start.js",
+    "build": "rm -rf dist && node ./build.js",
+    "format": "prettier --config config/prettier.json --write \"{src,test}/**/*.{ts,tsx,js,less}\""
+  },
+  "author": "vocoWone",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.6.0",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.8",
+    "chalk": "^4.1.0",
+    "file-loader": "4.0.0",
+    "fork-ts-checker-webpack-plugin": "1.3.7",
+    "fs-extra": "^9.0.1",
+    "html-webpack-plugin": "^4.3.0",
+    "loader-utils": "^2.0.0",
+    "optimize-css-assets-webpack-plugin": "5.0.3",
+    "prettier": "2.0.5",
+    "react": "^16.9.0",
+    "react-dom": "^16.11.0",
+    "terser-webpack-plugin": "^3.0.6",
+    "ts-loader": "6.0.4",
+    "ts-node": "8.3.0",
+    "tslib": "1.10.0",
+    "tslint": "5.18.0",
+    "tslint-react": "4.0.0",
+    "typescript": "3.9.5",
+    "webpack": "4.35.3",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {}
+}
