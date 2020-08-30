@@ -112,14 +112,17 @@ if (true) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getI18nContent", function() { return getI18nContent; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-var Index = function () {
-    console.info("123");
-    return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "123"));
-};
-/* harmony default export */ __webpack_exports__["default"] = (Index);
+var context = null;
+function getI18nContent() {
+    if (context === null) {
+        context = Object(react__WEBPACK_IMPORTED_MODULE_0__["createContext"])({});
+    }
+    return context;
+}
 
 
 /***/ }),

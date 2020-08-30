@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const HTMLPlugin = require("html-webpack-plugin");
-const I18nPlugin = require("./i18n-plugin");
+const I18nPlugin = require("./node/i18n-plugin");
 
 const config = {
     mode: "development",
@@ -19,7 +19,7 @@ const config = {
             {
                 test: /(\.tsx|\.ts)$/,
                 exclude: /node_modules/,
-                use: ["ts-loader", "./i18n-loader"],
+                use: ["ts-loader", "./node/i18n-loader"],
             },
         ],
     },
