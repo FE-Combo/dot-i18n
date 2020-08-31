@@ -14,6 +14,7 @@ module.exports = function (context) {
             const ast = babelParser.parse(
                 `
                 import React from "react";
+                /* i18n:string */
                 const Index = ()=>{
                     return <i18n namespace="namespace">123</i18n>
                 }
@@ -36,13 +37,13 @@ module.exports = function (context) {
                     path.get("body").unshiftContainer("body", babelTypes.expressionStatement(babelTypes.identifier("const t = useState()")));
                 },
                 ReturnStatement(path) {
-                    console.log(path.get("i18n").container.argument.openingElement.attributes);
                     path.get("i18n").container.argument.openingElement.attributes = [];
                     path.get("i18n").container.argument.openingElement.name.name = "";
                     path.get("i18n").container.argument.closingElement.name.name = "";
                     path.get("i18n").container.argument.children[0].value = "{t.global.name}";
                 },
                 enter(path) {
+                    console.log(path.get("i18n").container.trailingComments);
                     // if (path.container.type === "JSXElement" && path.container.openingElement && path.container.openingElement.name.name === "i18n") {
                     //     path.container.openingElement.name.name = "Context";
                     //     path.container.closingElement.name.name = "Context";
