@@ -59,7 +59,7 @@ module.exports = function (context) {
                 // 入口
             },
         });
-        console.log(babelGenerator.default(ast));
+        // console.log(babelGenerator.default(ast));
 
         const matchRegex = /\<i18n((.*?)\=(.*?))*?\>(.+?)\<\/i18n\>/g;
         const replaceRegex = /<\/?i18n.*?>/g;

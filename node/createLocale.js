@@ -7,6 +7,19 @@ const babelTraverse = require("@babel/traverse");
 const babelGenerator = require("@babel/generator");
 let currentTime = new Date().getTime();
 
+function findI18nTag(node) {
+    if ((node.openingElement && node.openingElement.name.name === "i18n") || (node.argument && node.argument.openingElement && node.argument.openingElement.name.name === "i18n")) {
+        const openingElement = node.openingElement || node.argument.openingElement;
+        console.log(openingElement);
+    }
+    if ((node.children && node.children.length > 0) || (node.argument && node.argument.children && node.argument.children.length > 0)) {
+        const children = node.children || node.argument.children;
+        children.forEach((_) => {
+            findI18nTag(_);
+        });
+    }
+}
+
 function getLocale() {
     const config = i18nStore.getConfig();
     const source = config.source;
@@ -29,7 +42,6 @@ function getLocale() {
                 });
                 babelTraverse.default(ast, {
                     CallExpression(path) {
-                        // 函数调用
                         const i18nContainer = path.get("i18n").container;
                         if (!i18nContainer.callee.object) {
                             const arguments = i18nContainer.arguments;
@@ -45,17 +57,11 @@ function getLocale() {
                         }
                     },
                     ReturnStatement(path) {
-                        // 编辑查找i18n标签
-                        // console.log(path.node.argument.children[1].openingElement.attributes);
-                        // const i18nContainer = path.get("i18n").argument;
-                        // if (i18nContainer.type === "JSXElement") {
-                        //     const attributes = i18nContainer.argument.openingElement.attributes;
-                        //     console.log(attributes);
-                        // }
-                        // console.log(attributes);
+                        findI18nTag(path.node);
                     },
                 });
                 // console.log(babelGenerator.default(ast));
+                // console.log(result);
             }
         } else {
             //
