@@ -2,10 +2,12 @@ const tsNode = require("ts-node");
 const path = require("path");
 const fs = require("fs-extra");
 const i18nStore = require("./i18n-store");
+const createLocale = require("./createLocale");
 
 const defaultConfig = {
     localePath: "/src/locales",
     languages: ["zh", "en"],
+    template: "i18n",
 };
 
 function execute() {
@@ -39,4 +41,5 @@ function execute() {
 
 if (!i18nStore.getConfig()) {
     execute();
+    createLocale();
 }

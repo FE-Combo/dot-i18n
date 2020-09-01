@@ -1,4 +1,6 @@
 {
+  "source": "/src",
+  "target": "/src/locales",
   "localePath": "/src/locales",
   "languages": ["zh", "en"]
 }
