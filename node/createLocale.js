@@ -4,13 +4,32 @@ const path = require("path");
 const shelljs = require("shelljs");
 const babelParser = require("@babel/parser");
 const babelTraverse = require("@babel/traverse");
-const babelGenerator = require("@babel/generator");
+
+let result = {};
 let currentTime = new Date().getTime();
 
 function findI18nTag(node) {
+    const config = i18nStore.getConfig();
+    const languages = config.languages;
     if ((node.openingElement && node.openingElement.name.name === "i18n") || (node.argument && node.argument.openingElement && node.argument.openingElement.name.name === "i18n")) {
-        const openingElement = node.openingElement || node.argument.openingElement;
-        console.log(openingElement);
+        const jsxNode = node || node.argument;
+        const openingElement = jsxNode.openingElement || jsxNode.openingElement;
+        const attributes = openingElement.attributes;
+        const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
+        const namespace = (namespaceAttribute && namespaceAttribute.value.value) || "global";
+        if (jsxNode.children.length === 1) {
+            const language = (languages && languages[0]) || "zh";
+            const value = jsxNode.children[0].value;
+            if (!result[language]) {
+                result[language] = {};
+            }
+            if (!result[language][namespace]) {
+                result[language][namespace] = {};
+            }
+            if (value && !Object.values(result[language][namespace]).includes(value)) {
+                result[language][namespace][(currentTime++).toString(16)] = value;
+            }
+        }
     }
     if ((node.children && node.children.length > 0) || (node.argument && node.argument.children && node.argument.children.length > 0)) {
         const children = node.children || node.argument.children;
@@ -20,15 +39,10 @@ function findI18nTag(node) {
     }
 }
 
-function getLocale() {
+function analyzeLocale() {
     const config = i18nStore.getConfig();
-    const source = config.source;
     const languages = config.languages;
-    const result = {};
-    languages.forEach((_) => {
-        result[_] = {};
-    });
-
+    const source = config.source;
     shelljs.ls(path.join(process.cwd(), source)).forEach((file) => {
         const filePath = path.join(process.cwd(), `${source}/${file}`);
         const isFile = fs.statSync(filePath).isFile();
@@ -46,12 +60,15 @@ function getLocale() {
                         if (!i18nContainer.callee.object) {
                             const arguments = i18nContainer.arguments;
                             const value = arguments && arguments[0] && arguments[0].value;
-                            const language = arguments && arguments[1] && arguments[1].value;
+                            const language = (languages && languages[0]) || "zh";
                             const namespace = (arguments && arguments[2] && arguments[2].value) || "global";
+                            if (!result[language]) {
+                                result[language] = {};
+                            }
                             if (!result[language][namespace]) {
                                 result[language][namespace] = {};
                             }
-                            if (!Object.values(result[language][namespace]).includes(value)) {
+                            if (value && !Object.values(result[language][namespace]).includes(value)) {
                                 result[language][namespace][(currentTime++).toString(16)] = value;
                             }
                         }
@@ -60,11 +77,9 @@ function getLocale() {
                         findI18nTag(path.node);
                     },
                 });
-                // console.log(babelGenerator.default(ast));
-                // console.log(result);
             }
         } else {
-            //
+            // 遍历
         }
     });
 }
@@ -88,8 +103,13 @@ function createLocale() {
 }
 
 function generate() {
-    getLocale();
+    const allLocales = i18nStore.getLocales();
+    if (allLocales instanceof Object) {
+        result = i18nStore.getLocales();
+    }
+    analyzeLocale();
     createLocale();
+    console.log(result);
 }
 
 module.exports = generate;

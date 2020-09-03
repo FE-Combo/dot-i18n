@@ -18,8 +18,18 @@ function execute() {
         const config = {...defaultConfig, ...JSON.parse(fs.readFileSync(process.cwd() + "/i18n.json"))};
         i18nStore.setConfig(config);
 
-        const allLocales = require(process.cwd() + config.localePath + "/index.ts").default;
-        i18nStore.setLocales(allLocales);
+        const localePath = process.cwd() + config.localePath + "/index.ts";
+
+        if (fs.pathExistsSync(localePath)) {
+            const allLocales = require(process.cwd() + config.localePath + "/index.ts").default;
+            i18nStore.setLocales(allLocales);
+        } else {
+            const locales = {};
+            config.languages.forEach((_) => {
+                locales[_] = {};
+            });
+            i18nStore.setLocales(locales);
+        }
 
         const reverseLocale = {};
         const mainLanguage = config.languages[0];
