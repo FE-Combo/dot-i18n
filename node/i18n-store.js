@@ -1,8 +1,13 @@
-const {createContext} = require("react");
+const {createContext, useContext} = require("react");
 
 const cache = {};
 
+function useLocales() {
+    return useContext(cache.context);
+}
+
 module.exports = {
+    useLocales,
     createContext() {
         cache.context = createContext({});
     },
@@ -31,7 +36,12 @@ module.exports = {
         return cache.reverseLocale;
     },
     t(value, language, namespace = "global") {
-        const code = cache.reverseLocale[value];
-        return cache.locales[language][namespace][code];
+        if (cache.reverseLocale && cache.reverseLocale[value] && cache.locales[language] && cache.locales[language][namespace]) {
+            const code = cache.reverseLocale[value];
+            if (cache.locales[language][namespace][code]) {
+                return cache.locales[language][namespace][code];
+            }
+        }
+        return value;
     },
 };

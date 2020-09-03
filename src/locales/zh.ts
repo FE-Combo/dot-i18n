@@ -1,6 +1,1 @@
-export default {
-    global: {
-        name: "名字",
-        age: "年龄",
-    },
-};
+export default {"g":{"17453f32be8":"中国"},"global":{"17453f32be9":"中国2","17453f32bea":"名字"},"global3":{"17453f32beb":"名字3"}}

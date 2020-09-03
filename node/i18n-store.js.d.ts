@@ -9,4 +9,7 @@ export const getLocales: () => any;
 export const createContext: () => void;
 export const getContext: () => Context;
 
+export const t: (value: string, language: string, namespace?: string) => any;
+export const useLocales: () => any;
+
 export const Context: Context;

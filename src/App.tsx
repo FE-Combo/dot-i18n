@@ -8,7 +8,7 @@ const I18nContext = I18nStore.getContext()
 
 const Index = () => {
     return (
-        <I18nContext.Provider value={locales.zh}>
+        <I18nContext.Provider value={locales.en}>
             <MyApp />
         </I18nContext.Provider>
     );

@@ -33,7 +33,7 @@ function execute() {
 
         const reverseLocale = {};
         const mainLanguage = config.languages[0];
-        const accordingCodeLocale = require(path.resolve(__dirname, "../src/locales/" + mainLanguage + ".ts")).default;
+        const accordingCodeLocale = require(`${process.cwd()}${config.localePath}/${mainLanguage}.ts`).default;
         Object.keys(accordingCodeLocale).forEach((_) => {
             const subLocale = accordingCodeLocale[_];
             Object.keys(subLocale).forEach((__) => {
