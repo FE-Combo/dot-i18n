@@ -1,7 +1,8 @@
+require("colors");
 require("./preOperation");
-const path = require("path");
 const fs = require("fs-extra");
 const XLSX = require("xlsx");
+const XLSXStyle = require("xlsx-style");
 const i18nStore = require("./i18n-store");
 
 function execute() {
@@ -28,12 +29,32 @@ function execute() {
             });
         });
     });
+
+    const languageCountArray = Array(languages.length + 2).fill(null);
     const worksheet = XLSX.utils.json_to_sheet(data);
+    Object.keys(worksheet).forEach((_) => {
+        if (/^[A-Z]+1$/.test(_)) {
+            worksheet[_].s = {
+                alignment: {
+                    horizontal: "center",
+                    vertical: "center",
+                },
+                bgColor: {rgb: "f6f8fa00"},
+                font: {
+                    sz: 14,
+                    bold: true,
+                    color: {rgb: "24292e00"},
+                },
+            };
+        }
+    });
+    worksheet["!cols"] = languageCountArray.map((_) => ({wpx: 100}));
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     const excelExportFilePath = process.cwd() + config.exportExcelPath;
     fs.ensureFileSync(excelExportFilePath);
-    XLSX.writeFile(workbook, excelExportFilePath);
+    XLSXStyle.writeFile(workbook, excelExportFilePath, {bookType: "xlsx", bookSST: false, type: "binary"});
 }
 
 execute();
