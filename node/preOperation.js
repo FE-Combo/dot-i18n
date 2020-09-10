@@ -8,6 +8,8 @@ const defaultConfig = {
     localePath: "/src/locales",
     languages: ["zh", "en"],
     template: "i18n",
+    exportExcelPath: "/.i18n/result.xlsx",
+    importExcelPath: "/.i18n/result.xlsx",
 };
 
 function execute() {
@@ -33,7 +35,12 @@ function execute() {
 
         const reverseLocale = {};
         const mainLanguage = config.languages[0];
-        const accordingCodeLocale = require(`${process.cwd()}${config.localePath}/${mainLanguage}.ts`).default;
+        const mainLanguageLocalePath = `${process.cwd()}${config.localePath}/${mainLanguage}.ts`;
+        if (!fs.pathExistsSync(localePath)) {
+            fs.ensureFileSync(mainLanguageLocalePath);
+            fs.writeFileSync(mainLanguageLocalePath, "export default {}");
+        }
+        const accordingCodeLocale = require(mainLanguageLocalePath).default;
         Object.keys(accordingCodeLocale).forEach((_) => {
             const subLocale = accordingCodeLocale[_];
             Object.keys(subLocale).forEach((__) => {

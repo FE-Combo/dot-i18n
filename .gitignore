@@ -1,4 +1,5 @@
 .idea/
+.i18n
 .vscode/
 /.gradle/
 output*/

@@ -1,4 +1,4 @@
-require("../node/preOperation");
+require("./preOperation");
 const babelParser = require("@babel/parser");
 const babelTraverse = require("@babel/traverse");
 const babelGenerator = require("@babel/generator");
