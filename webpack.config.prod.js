@@ -11,23 +11,15 @@ const webpackConfig = [
     {
         mode: "production",
         entry: {
-            index: `${resolve("src")}/index.tsx`,
-            "index.min": `${resolve("src")}/index.tsx`,
+            index: `${resolve("src")}/App.tsx`,
         },
         output: {
             path: resolve("dist"),
             filename: "[name].js",
-            library: "SUPER_EDITOR",
-            libraryTarget: "umd",
-            libraryExport: "default",
-            globalObject: "this",
         },
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx", ".less"],
             modules: [resolve("src"), "node_modules"],
-        },
-        optimization: {
-            minimizer: [new TerserPlugin({include: /index\.min\.js$/})],
         },
         performance: {
             maxEntrypointSize: 720000,
@@ -36,9 +28,9 @@ const webpackConfig = [
         module: {
             rules: [
                 {
-                    test: /\.(ts|tsx)$/,
-                    loader: "ts-loader",
-                    include: [resolve("src")],
+                    test: /(\.tsx|\.ts)$/,
+                    exclude: /node_modules/,
+                    use: ["ts-loader", "./node/i18n-loader"],
                 },
             ],
         },

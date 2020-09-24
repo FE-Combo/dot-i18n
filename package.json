@@ -2,14 +2,15 @@
   "name": "dot-i18n",
   "version": "0.0.1",
   "description": "Multilingual solution.",
-  "index": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "index": "node/index.js",
+  "module": "node/index.js",
+  "types": "node/index.d.ts",
   "scripts": {
     "start": "node ./start.js",
     "build": "rm -rf dist && node ./build.js",
     "ts2excel": "node ./node/ts2excel.js",
     "excel2ts": "node ./node/excel2ts.js",
+    "locales": "node ./node/createLocale.js",
     "format": "prettier --config config/prettier.json --write \"{src,test}/**/*.{ts,tsx,js,less}\""
   },
   "author": "vocoWone",

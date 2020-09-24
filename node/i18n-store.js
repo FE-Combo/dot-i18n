@@ -9,7 +9,7 @@ function useLocales() {
 module.exports = {
     useLocales,
     createContext() {
-        cache.context = createContext({});
+        cache.context = createContext("");
     },
     getContext() {
         return cache.context;
@@ -35,11 +35,13 @@ module.exports = {
     getReverseLocale() {
         return cache.reverseLocale;
     },
-    t(value, language, namespace = "global") {
-        if (cache.reverseLocale && cache.reverseLocale[value] && cache.locales[language] && cache.locales[language][namespace]) {
-            const code = cache.reverseLocale[value];
-            if (cache.locales[language][namespace][code]) {
-                return cache.locales[language][namespace][code];
+    t(value, options, currentLocale, reverseLocaleString) {
+        const namespace = typeof options === ("string" ? options : options && options.namespace) || "global";
+        const reverseLocale = JSON.parse(reverseLocaleString);
+        if (reverseLocale && reverseLocale[namespace] && reverseLocale[namespace][value] && currentLocale && currentLocale[namespace]) {
+            const code = reverseLocale[namespace][value];
+            if (currentLocale[namespace][code]) {
+                return currentLocale[namespace][code];
             }
         }
         return value;

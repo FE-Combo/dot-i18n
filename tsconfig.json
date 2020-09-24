@@ -20,8 +20,11 @@
     "inlineSources": true,
     "declaration": true,
     "skipLibCheck": true,
-    "typeRoots": ["./src/global.d.ts"]
+    "typeRoots": ["./src/global.d.ts"],
+    "paths": {
+      "@node/*": ["node/*"]
+    }
   },
   "include": ["./src"],
-  "exclude": ["node_modules", "./i18n-store.js"]
+  "exclude": ["node_modules"]
 }

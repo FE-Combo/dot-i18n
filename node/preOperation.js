@@ -2,7 +2,6 @@ const tsNode = require("ts-node");
 const path = require("path");
 const fs = require("fs-extra");
 const i18nStore = require("./i18n-store");
-const createLocale = require("./createLocale");
 
 const defaultConfig = {
     localePath: "/src/locales",
@@ -36,21 +35,19 @@ function execute() {
         const reverseLocale = {};
         const mainLanguage = config.languages[0];
         const mainLanguageLocalePath = `${process.cwd()}${config.localePath}/${mainLanguage}.ts`;
-        if (!fs.pathExistsSync(localePath)) {
-            fs.ensureFileSync(mainLanguageLocalePath);
-            fs.writeFileSync(mainLanguageLocalePath, "export default {}");
-        }
-        const accordingCodeLocale = require(mainLanguageLocalePath).default;
-        Object.keys(accordingCodeLocale).forEach((_) => {
-            const subLocale = accordingCodeLocale[_];
-            Object.keys(subLocale).forEach((__) => {
-                if (!reverseLocale[_]) {
-                    reverseLocale[_] = {};
-                }
-                reverseLocale[_][subLocale[__]] = __;
+        if (fs.pathExistsSync(localePath) && fs.pathExistsSync(mainLanguageLocalePath)) {
+            const accordingCodeLocale = require(mainLanguageLocalePath).default;
+            Object.keys(accordingCodeLocale).forEach((_) => {
+                const subLocale = accordingCodeLocale[_];
+                Object.keys(subLocale).forEach((__) => {
+                    if (!reverseLocale[_]) {
+                        reverseLocale[_] = {};
+                    }
+                    reverseLocale[_][subLocale[__]] = __;
+                });
             });
-        });
-        i18nStore.setReverseLocale(reverseLocale);
+            i18nStore.setReverseLocale(reverseLocale);
+        }
     } catch (error) {
         console.info(error);
     }
@@ -58,5 +55,4 @@ function execute() {
 
 if (!i18nStore.getConfig()) {
     execute();
-    createLocale();
 }

@@ -1,48 +1,16 @@
+require("./preOperation");
 const fs = require("fs-extra");
 const i18nStore = require("./i18n-store");
 const path = require("path");
 const shelljs = require("shelljs");
 const babelParser = require("@babel/parser");
 const babelTraverse = require("@babel/traverse");
+const {findI18nTag} = require("./kit");
 
 let result = {};
 let currentTime = new Date().getTime();
 
-function findI18nTag(node) {
-    const config = i18nStore.getConfig();
-    const languages = config.languages;
-    if ((node.openingElement && node.openingElement.name.name === "i18n") || (node.argument && node.argument.openingElement && node.argument.openingElement.name.name === "i18n")) {
-        const jsxNode = node || node.argument;
-        const openingElement = jsxNode.openingElement;
-        const attributes = openingElement.attributes;
-        const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
-        const namespace = (namespaceAttribute && namespaceAttribute.value.value) || "global";
-        if (jsxNode.children.length === 1) {
-            const language = (languages && languages[0]) || "zh";
-            const value = jsxNode.children[0].value;
-            if (!result[language]) {
-                result[language] = {};
-            }
-            if (!result[language][namespace]) {
-                result[language][namespace] = {};
-            }
-            if (value && !Object.values(result[language][namespace]).includes(value)) {
-                result[language][namespace][(currentTime++).toString(16)] = value;
-            }
-        }
-    }
-    if ((node.children && node.children.length > 0) || (node.argument && node.argument.children && node.argument.children.length > 0)) {
-        const children = node.children || node.argument.children;
-        children.forEach((_) => {
-            findI18nTag(_);
-        });
-    }
-}
-
-function analyzeLocale() {
-    const config = i18nStore.getConfig();
-    const languages = config.languages;
-    const source = config.source;
+function analyzeLocale(source, languages) {
     shelljs.ls(path.join(process.cwd(), source)).forEach((file) => {
         const filePath = path.join(process.cwd(), `${source}/${file}`);
         const isFile = fs.statSync(filePath).isFile();
@@ -74,18 +42,35 @@ function analyzeLocale() {
                         }
                     },
                     ReturnStatement(path) {
-                        findI18nTag(path.node);
+                        findI18nTag(path.node, function (jsxNode) {
+                            const openingElement = jsxNode.openingElement;
+                            const attributes = openingElement.attributes;
+                            const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
+                            const namespace = (namespaceAttribute && namespaceAttribute.value.value) || "global";
+                            if (jsxNode.children.length === 1) {
+                                const language = (languages && languages[0]) || "zh";
+                                const value = jsxNode.children[0].value;
+                                if (!result[language]) {
+                                    result[language] = {};
+                                }
+                                if (!result[language][namespace]) {
+                                    result[language][namespace] = {};
+                                }
+                                if (value && !Object.values(result[language][namespace]).includes(value)) {
+                                    result[language][namespace][(currentTime++).toString(16)] = value;
+                                }
+                            }
+                        });
                     },
                 });
             }
         } else {
-            // 遍历
+            analyzeLocale(`${source}/${file}`, languages);
         }
     });
 }
 
-function generateLocale() {
-    const config = i18nStore.getConfig();
+function generateLocale(config) {
     const languages = config.languages;
     fs.ensureDirSync(path.join(process.cwd(), config.localePath));
     fs.ensureFileSync(path.join(process.cwd(), `${config.localePath}/index.ts`));
@@ -95,7 +80,7 @@ function generateLocale() {
 */\n\n`;
     languages.forEach((_) => {
         fs.ensureFileSync(path.join(process.cwd(), `${config.localePath}/${_}.ts`));
-        fs.writeFileSync(path.join(process.cwd(), `${config.localePath}/${_}.ts`), `export default ${JSON.stringify(result[_])}`);
+        fs.writeFileSync(path.join(process.cwd(), `${config.localePath}/${_}.ts`), `export default ${JSON.stringify(result[_])};\n`);
         indexTemplate += `import ${_} from "./${_}";\n`;
     });
     indexTemplate += `\nexport default {${languages.join(", ")}};\n`;
@@ -108,9 +93,12 @@ function generate() {
         result = i18nStore.getLocales();
     }
 
-    analyzeLocale();
+    const config = i18nStore.getConfig();
+    const languages = config.languages;
+    const source = config.source;
 
-    generateLocale();
+    analyzeLocale(source, languages);
+    generateLocale(config);
 }
 
-module.exports = generate;
+generate();

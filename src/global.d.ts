@@ -4,4 +4,12 @@ declare namespace JSX {
     }
 }
 
-declare const i18n: (value: string, language: string, namespace?: string) => any;
+type I18NOptions =
+    | {
+          namespace?: string;
+          language?: string;
+          [key: string]: string;
+      }
+    | string;
+
+declare const i18n: (value: string, options?: I18NOptions) => any;

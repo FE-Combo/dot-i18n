@@ -1,15 +1,32 @@
 import React from "react";
-import locales from "./locales";
 import * as I18nStore from "../node/i18n-store.js";
+import locales from "./locales"
 import ReactDOM from "react-dom";
-import MyApp from "./MyApp";
-I18nStore.createContext()
-const I18nContext = I18nStore.getContext()
+import MyApp from "./MyApp"
+I18nStore.createContext();
+const I18nContext = I18nStore.getContext();
+
+
+const App = () => {
+    const common = i18n("中国");
+    return (
+        <div>
+            <MyApp />
+            <i18n namespace="global">中国</i18n>
+            <i18n namespace="global3">名字3</i18n>
+            <div>
+                <a>123</a>
+            </div>
+        </div>
+
+    );
+};
+
 
 const Index = () => {
     return (
         <I18nContext.Provider value={locales.en}>
-            <MyApp />
+            <App />
         </I18nContext.Provider>
     );
 };
