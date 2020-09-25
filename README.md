@@ -4,10 +4,61 @@
 
 - 基于 react+typescript 的项目
 - 目前只支持 hooks
+- loader 会被被打断的情况下不适用
 
-## 安装
+## 使用
 
 - yarn add dot-i18n --dev
+- 项目根目录下创建 i18n.json
+  - source: string `多语言使用范围. default: /src`
+  - localePath: string `多语言词条最终生成路径. default: /src/locales`
+  - exportExcelPath: string `excel导出路径. default: /.i18n/result.xlsx`
+  - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
+  - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
+- 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/node/createLocale"`并执行`yarn locales`
+- webpack 中新增 loader
+  ```
+  {
+    test: /\.(ts|tsx)$/,
+    exclude: /node_modules/,
+    use: { loader: 'dot-i18n/node/i18n-loader' },
+  },
+  ```
+- 项目 root 导入 I18nContext
+
+  ```
+  import * as I18nStore from "dot-i18n/node/i18n-store.js";
+  import locales from "./locales"
+  I18nStore.createContext();
+  const I18nContext = I18nStore.getContext();
+
+       <I18nContext.Provider value={locales.zh}>
+           test
+        </I18nContext.Provider>
+  ```
+
+- 新增全局 tag/function->i18n
+
+  ```
+  declare namespace JSX {
+      interface IntrinsicElements {
+          i18n: React.DetailedHTMLProps<any, any>;
+      }
+  }
+
+  type I18NOptions =
+      | {
+          namespace?: string;
+          language?: string;
+          [key: string]: string;
+      }
+      | string;
+
+  declare const i18n: (value: string, options?: I18NOptions) => any;
+
+  ```
+
+- 使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言
 
 ## Attention
 
@@ -15,11 +66,8 @@
 
 ## TODO
 
-- excel 样式
-- 整理与优化
 - 文案变量处理
 - 支持配置文件
-- context 存储 language 而不是 locale
 - js->ts
 - 支持类组件
 - 开发环境性能瓶颈检测

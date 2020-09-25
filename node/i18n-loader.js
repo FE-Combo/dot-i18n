@@ -11,7 +11,7 @@ module.exports = function (context) {
     const i18nConfig = i18nStore.getConfig();
 
     if (nextContext.includes(`<${i18nConfig.template}`) || nextContext.includes(`${i18nConfig.template}(`)) {
-        const importTemplate = `import * as _$$I18nStore from "${i18nConfig.isDev ? "../node/i18n-store.js" : "dot-i18n/i18n-store.js"}";\n`;
+        const importTemplate = `import * as _$$I18nStore from "${i18nConfig.isDev ? "../node/i18n-store.js" : "dot-i18n/node/i18n-store.js"}";\n`;
         const ast = babelParser.parse(
             `
     ${importTemplate}

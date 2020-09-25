@@ -8,7 +8,6 @@ const I18nContext = I18nStore.getContext();
 
 
 const App = () => {
-    const common = i18n("中国");
     return (
         <div>
             <MyApp />
@@ -23,13 +22,33 @@ const App = () => {
 };
 
 
-const Index = () => {
-    return (
-        <I18nContext.Provider value={locales.en}>
-            <App />
-        </I18nContext.Provider>
-    );
-};
+class Index extends React.Component {
+    render() {
+        return (
+            <I18nContext.Provider value={locales.en}>
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+                <App />
+            </I18nContext.Provider>
+        );
+    }
+}
+
 
 const rootElement: HTMLDivElement = document.createElement("div");
 rootElement.id = "framework-app-root";
