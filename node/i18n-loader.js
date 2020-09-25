@@ -39,7 +39,11 @@ module.exports = function (context) {
                 path.get("body").unshiftContainer("body", babelTypes.expressionStatement(babelTypes.identifier("const _$$t = _$$I18nStore.useLocales()")));
             },
             ArrowFunctionExpression(path) {
-                path.get("body").unshiftContainer("body", babelTypes.expressionStatement(babelTypes.identifier("const _$$t = _$$I18nStore.useLocales()")));
+                const container = path.get("body").container;
+                const returnStatementItem = container && container.body && container.body.body && container.body.body.find((_) => _.type === "ReturnStatement");
+                if (returnStatementItem && returnStatementItem.argument && returnStatementItem.argument.type === "JSXElement") {
+                    path.get("body").unshiftContainer("body", babelTypes.expressionStatement(babelTypes.identifier("const _$$t = _$$I18nStore.useLocales()")));
+                }
             },
             ReturnStatement(path) {
                 findI18nTag(path.node, function (jsxNode) {
