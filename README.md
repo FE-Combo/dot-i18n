@@ -20,7 +20,7 @@
   - exportExcelPath: string `excel导出路径. default: /.i18n/result.xlsx`
   - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
-  - prettierConfig: prettier 文件路径
+  - prettierConfig: prettier 文件路径, 使用前请确保项目已经安装prettier
 - 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/node/createLocale"`并执行`yarn locales`
 - webpack 中新增 loader
   ```
