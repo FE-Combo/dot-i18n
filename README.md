@@ -1,12 +1,17 @@
 [![npm version](https://img.shields.io/npm/v/dot-i18n.svg?style=flat)](https://www.npmjs.com/package/dot-i18n)
 
+## 动机
+
+- 无痕多语言配置开发环境
+- 直接写文案不需要通过变量方式配置
+
 ## 前置条件
 
-- 基于 react+typescript 的项目
 - 目前只支持 hooks
+- 基于 react+typescript 的项目
 - loader 会被被打断的情况下不适用
 
-## 使用
+## 如何使用
 
 - yarn add dot-i18n --dev
 - 项目根目录下创建 i18n.json
@@ -15,6 +20,7 @@
   - exportExcelPath: string `excel导出路径. default: /.i18n/result.xlsx`
   - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
+  - prettierConfig: prettier 文件路径
 - 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/node/createLocale"`并执行`yarn locales`
 - webpack 中新增 loader
   ```
@@ -60,9 +66,18 @@
 
 - 使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言
 
+- 词条导出(ts->excel)
+
+  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/node/ts2excel"`并执行`yarn ts2excel`
+  - 源文件路径为 i18n.json 的 localePath, 目标文件路径为 i18n.json 的 exportExcelPath
+
+- 词条导入(excel->ts)
+  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/node/excel2ts"`并执行`yarn excel2ts`
+  - 源文件路径为 i18n.json 的 importExcelPath, 目标文件路径为 i18n.json 的 localePath
+
 ## Attention
 
-- 原生的 xlsx,但不支持表格的样式设置, 选择使用 xlsx-style 可以设置表格样式
+- 原生的 xlsx 不支持表格的样式设置, 选择使用 xlsx-style 可以设置表格样式
 
 ## TODO
 

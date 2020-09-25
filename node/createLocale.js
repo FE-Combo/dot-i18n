@@ -5,7 +5,7 @@ const path = require("path");
 const shelljs = require("shelljs");
 const babelParser = require("@babel/parser");
 const babelTraverse = require("@babel/traverse");
-const {findI18nTag} = require("./kit");
+const {findI18nTag, spawn} = require("./kit");
 
 let result = {};
 let currentTime = new Date().getTime();
@@ -72,6 +72,8 @@ function analyzeLocale(source, languages) {
 
 function generateLocale(config) {
     const languages = config.languages;
+    const prettierConfig = config.prettierConfig;
+    const localePath = config.localePath;
     fs.ensureDirSync(path.join(process.cwd(), config.localePath));
     fs.ensureFileSync(path.join(process.cwd(), `${config.localePath}/index.ts`));
     let indexTemplate = `/*
@@ -85,6 +87,10 @@ function generateLocale(config) {
     });
     indexTemplate += `\nexport default {${languages.join(", ")}};\n`;
     fs.writeFileSync(path.join(process.cwd(), `${config.localePath}/index.ts`), indexTemplate);
+
+    if (prettierConfig) {
+        spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), localePath)]);
+    }
 }
 
 function generate() {

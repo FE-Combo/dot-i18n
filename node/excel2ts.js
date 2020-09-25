@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs-extra");
 const XLSX = require("xlsx");
 const i18nStore = require("./i18n-store");
+const {spawn} = require("./kit");
 
 let result = {};
 
@@ -27,6 +28,8 @@ function generateLocale() {
 function execute() {
     const config = i18nStore.getConfig();
     const allLocales = i18nStore.getLocales();
+    const prettierConfig = config.prettierConfig;
+    const localePath = config.localePath;
     if (allLocales) {
         result = allLocales;
     }
@@ -48,6 +51,10 @@ function execute() {
     });
 
     generateLocale();
+    if (prettierConfig) {
+        spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), localePath)]);
+    }
+    console.info("Build successfully");
 }
 
 execute();

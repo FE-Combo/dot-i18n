@@ -1,1 +1,5 @@
-export default {"g":{"174bdfee8c6":"中国"},"global":{"174bdfee8c7":"中国2","174bdfee8c8":"中国"},"global3":{"174bdfee8c9":"名字3"}};
+export default {
+    g: {"174bdfee8c6": "中国", "17457af1f9c": "中国", "17453f32be8": "中国"},
+    global: {"174bdfee8c7": "中国2", "174bdfee8c8": "中国", "17457af1f9e": "名字", "17457af1f9d": "中国2", "17453f32be9": "中国2", "17453f32bea": "名字"},
+    global3: {"174bdfee8c9": "名字3", "17457af1f9f": "名字3", "17453f32beb": "名字3"},
+};

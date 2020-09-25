@@ -55,6 +55,8 @@ function execute() {
     const excelExportFilePath = process.cwd() + config.exportExcelPath;
     fs.ensureFileSync(excelExportFilePath);
     XLSXStyle.writeFile(workbook, excelExportFilePath, {bookType: "xlsx", bookSST: false, type: "binary"});
+
+    console.info("Build successfully");
 }
 
 execute();
