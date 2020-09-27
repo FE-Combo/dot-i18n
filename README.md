@@ -13,7 +13,7 @@
 
 ## 如何使用
 
-- yarn add dot-i18n --dev
+- yarn add dot-i18n --save
 - 项目根目录下创建 i18n.json
   - source: string `多语言使用范围. default: /src`
   - localePath: string `多语言词条最终生成路径. default: /src/locales`
