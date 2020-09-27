@@ -1,6 +1,6 @@
 {
   "name": "dot-i18n",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Multilingual solution.",
   "index": "node/index.js",
   "module": "node/index.js",

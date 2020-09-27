@@ -78,7 +78,7 @@ function execute() {
 
     generateLocale();
     if (prettierConfig) {
-        spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), localePath)]);
+        spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), localePath + "/*")]);
     }
     console.info("Build successfully");
 }

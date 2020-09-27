@@ -89,7 +89,7 @@ function generateLocale(config) {
     fs.writeFileSync(path.join(process.cwd(), `${config.localePath}/index.ts`), indexTemplate);
 
     if (prettierConfig) {
-        spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), localePath)]);
+        spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), localePath + "/*")]);
     }
 }
 
