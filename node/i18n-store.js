@@ -1,45 +1,45 @@
-const {createContext, useContext} = require("react");
+var React = require("react");
 
-const cache = {};
+var cache = {};
 
 function useLocales() {
-    return useContext(cache.context);
+    return React.useContext(cache.context);
 }
 
 module.exports = {
     useLocales,
-    createContext() {
-        cache.context = createContext("");
+    createContext: function () {
+        cache.context = React.createContext({});
     },
-    getContext() {
+    getContext: function () {
         return cache.context;
     },
     get Context() {
         return cache.context;
     },
-    setConfig(data) {
+    setConfig: function (data) {
         cache.config = data;
     },
-    getConfig() {
+    getConfig: function () {
         return cache.config;
     },
-    setLocales(data) {
+    setLocales: function (data) {
         cache.locales = data;
     },
-    getLocales() {
+    getLocales: function () {
         return cache.locales;
     },
-    setReverseLocale(data) {
+    setReverseLocale: function (data) {
         cache.reverseLocale = data;
     },
-    getReverseLocale() {
+    getReverseLocale: function () {
         return cache.reverseLocale;
     },
-    t(value, options, currentLocale, reverseLocaleString) {
-        const namespace = typeof options === ("string" ? options : options && options.namespace) || "global";
-        const reverseLocale = JSON.parse(reverseLocaleString);
+    t: function (value, options, currentLocale, reverseLocaleString) {
+        var namespace = typeof options === ("string" ? options : options && options.namespace) || "global";
+        var reverseLocale = JSON.parse(reverseLocaleString);
         if (reverseLocale && reverseLocale[namespace] && reverseLocale[namespace][value] && currentLocale && currentLocale[namespace]) {
-            const code = reverseLocale[namespace][value];
+            var code = reverseLocale[namespace][value];
             if (currentLocale[namespace][code]) {
                 return currentLocale[namespace][code];
             }

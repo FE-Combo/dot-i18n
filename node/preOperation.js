@@ -9,6 +9,7 @@ const defaultConfig = {
     template: "i18n",
     exportExcelPath: "/.i18n/result.xlsx",
     importExcelPath: "/.i18n/result.xlsx",
+    strict: true,
 };
 
 function execute() {

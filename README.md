@@ -3,7 +3,7 @@
 ## 动机
 
 - 无痕多语言配置开发环境
-- 直接写文案不需要通过变量方式配置
+- 便携式 ts/excel 转换
 
 ## 前置条件
 
@@ -20,7 +20,8 @@
   - exportExcelPath: string `excel导出路径. default: /.i18n/result.xlsx`
   - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
-  - prettierConfig: prettier 文件路径, 使用前请确保项目已经安装prettier
+  - prettierConfig: prettier 文件路径, 使用前请确保项目已经安装 prettier
+  - strict: boolean locales 数据结构是否严格按照 language->namespace->code, 如果 strict: false 则表示 locales 结构为 language->any. default: true
 - 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/node/createLocale"`并执行`yarn locales`
 - webpack 中新增 loader
   ```

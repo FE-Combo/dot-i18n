@@ -41,7 +41,7 @@ module.exports = function (context) {
             ArrowFunctionExpression(path) {
                 const container = path.get("body").container;
                 const returnStatementItem = container && container.body && container.body.body && container.body.body.find((_) => _.type === "ReturnStatement");
-                if (returnStatementItem && returnStatementItem.argument && returnStatementItem.argument.type === "JSXElement") {
+                if (returnStatementItem && returnStatementItem.argument && (returnStatementItem.argument.type === "JSXElement" || returnStatementItem.argument.type === "JSXFragment")) {
                     path.get("body").unshiftContainer("body", babelTypes.expressionStatement(babelTypes.identifier("const _$$t = _$$I18nStore.useLocales()")));
                 }
             },

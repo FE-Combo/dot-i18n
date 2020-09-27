@@ -7,28 +7,83 @@ const i18nStore = require("./i18n-store");
 
 function execute() {
     const config = i18nStore.getConfig();
+    const strict = config.strict;
     const languages = config.languages;
     const allLocales = i18nStore.getLocales() || {};
 
     const data = [];
-    Object.keys(allLocales).forEach((_) => {
-        Object.keys(allLocales[_]).forEach((__) => {
-            Object.keys(allLocales[_][__]).forEach((___) => {
-                const sheet = {
-                    namespace: __,
-                    code: ___,
-                };
-                languages.forEach((language) => {
-                    sheet[language] = allLocales && allLocales[language] && allLocales[language][__] && allLocales[language][__][___];
+    if (strict) {
+        Object.keys(allLocales).forEach((_) => {
+            Object.keys(allLocales[_]).forEach((__) => {
+                Object.keys(allLocales[_][__]).forEach((___) => {
+                    const sheet = {
+                        namespace: __,
+                        code: ___,
+                    };
+                    languages.forEach((language) => {
+                        sheet[language] = allLocales && allLocales[language] && allLocales[language][__] && allLocales[language][__][___];
+                    });
+                    if (Object.values(sheet).filter((v) => v).length === languages.length + 2) {
+                        data.push(sheet);
+                    } else {
+                        data.unshift(sheet);
+                    }
                 });
-                if (Object.values(sheet).filter((v) => v).length === languages.length + 2) {
-                    data.push(sheet);
-                } else {
-                    data.unshift(sheet);
-                }
             });
         });
-    });
+    } else {
+        const recursion = (item, codes) => {
+            if (item instanceof Array) {
+                item.forEach((_, index) => {
+                    if (typeof _ === "object") {
+                        recursion(_, [...codes, index]);
+                    } else if (typeof _ === "string" || typeof _ === "number") {
+                        const nextCodes = [...codes];
+                        const language = nextCodes.shift();
+                        const code = [...nextCodes, index].join(".");
+                        const sheetIndex = data.findIndex((_) => _ && _.code === code);
+                        if (sheetIndex !== -1) {
+                            data[sheetIndex] = {...data[sheetIndex], [language]: _};
+                        } else {
+                            const sheet = {code, [language]: _};
+                            languages.forEach((v) => {
+                                if (!sheet[v]) {
+                                    sheet[v] = undefined;
+                                }
+                            });
+                            data.push(sheet);
+                        }
+                    }
+                });
+            }
+            if (item instanceof Object) {
+                Object.keys(item).forEach((_) => {
+                    if (typeof item[_] === "object") {
+                        recursion(item[_], [...codes, _]);
+                    } else if (typeof item[_] === "string" || typeof _ === "number") {
+                        const nextCodes = [...codes];
+                        const language = nextCodes.shift();
+                        const code = [...nextCodes, _].join(".");
+                        const sheetIndex = data.findIndex((_) => _ && _.code === code);
+                        if (sheetIndex !== -1) {
+                            data[sheetIndex] = {...data[sheetIndex], [language]: item[_]};
+                        } else {
+                            const sheet = {code, [language]: item[_]};
+                            languages.forEach((v) => {
+                                if (!sheet[v]) {
+                                    sheet[v] = undefined;
+                                }
+                            });
+                            data.push(sheet);
+                        }
+                    }
+                });
+            }
+        };
+        if (typeof allLocales === "object") {
+            recursion(allLocales, []);
+        }
+    }
 
     const languageCountArray = Array(languages.length + 2).fill(null);
     const worksheet = XLSX.utils.json_to_sheet(data);
