@@ -45,8 +45,9 @@ module.exports = function (context) {
                     path.get("body").unshiftContainer("body", babelTypes.expressionStatement(babelTypes.identifier("const _$$t = _$$I18nStore.useLocales()")));
                 }
             },
-            ReturnStatement(path) {
-                findI18nTag(path.node, function (jsxNode) {
+            JSXElement(path) {
+                if (path.node.openingElement && path.node.openingElement.name && path.node.openingElement.name.name === "i18n") {
+                    const jsxNode = path.node;
                     const openingElement = jsxNode.openingElement;
                     const attributes = openingElement.attributes;
                     const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
@@ -65,7 +66,7 @@ module.exports = function (context) {
                             }
                         }
                     }
-                });
+                }
             },
         });
         return babelGenerator.default(ast).code;

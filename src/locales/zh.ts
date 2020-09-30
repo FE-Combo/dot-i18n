@@ -1,1 +1,1 @@
-export default {global: {"174ce1c1b0c": "中国"}, global3: {"174ce1c1b0d": "名字3"}};
+export default {global: {"174dd55b972": "中秋", "174dd55b973": "国庆", "174dd55b974": "团圆", "174dd581f94": "回家"}};

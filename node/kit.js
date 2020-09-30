@@ -1,6 +1,6 @@
 const childProcess = require("child_process");
 
-function findI18nTag(node, callback) {
+function returnJSXElementFindI18nTag(node, callback) {
     if ((node.openingElement && node.openingElement.name.name === "i18n") || (node.argument && node.argument.openingElement && node.argument.openingElement.name.name === "i18n")) {
         const jsxNode = node || node.argument;
         callback(jsxNode);
@@ -29,6 +29,6 @@ function spawn(command, arguments) {
 }
 
 module.exports = {
-    findI18nTag,
+    returnJSXElementFindI18nTag,
     spawn,
 };

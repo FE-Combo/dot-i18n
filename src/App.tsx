@@ -7,15 +7,22 @@ I18nStore.createContext();
 const I18nContext = I18nStore.getContext();
 
 
-const App = () => {
+const App = (props: any) => {
+    const { text = "" } = props;
     return (
         <div>
-            <MyApp />
-            <i18n namespace="global">中国</i18n>
-            <i18n namespace="global3">名字3</i18n>
-            <div>
-                <a>123</a>
-            </div>
+            {text}
+            <i18n>中秋</i18n>
+            <i18n>国庆</i18n>
+            <i18n>团圆</i18n>
+            <MyApp text={<div>
+                <div>
+                    <div>
+                        <i18n>回家</i18n>
+                    </div>
+                </div>
+            </div>} />
+
         </div>
     );
 };
@@ -25,23 +32,6 @@ class Index extends React.Component {
     render() {
         return (
             <I18nContext.Provider value={locales.en}>
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
-                <App />
                 <App />
             </I18nContext.Provider>
         );

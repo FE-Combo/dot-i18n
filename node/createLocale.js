@@ -41,8 +41,9 @@ function analyzeLocale(source, languages) {
                             }
                         }
                     },
-                    ReturnStatement(path) {
-                        findI18nTag(path.node, function (jsxNode) {
+                    JSXElement(path) {
+                        if (path.node.openingElement && path.node.openingElement.name && path.node.openingElement.name.name === "i18n") {
+                            const jsxNode = path.node;
                             const openingElement = jsxNode.openingElement;
                             const attributes = openingElement.attributes;
                             const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
@@ -60,7 +61,7 @@ function analyzeLocale(source, languages) {
                                     result[language][namespace][(currentTime++).toString(16)] = value;
                                 }
                             }
-                        });
+                        }
                     },
                 });
             }

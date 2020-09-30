@@ -9,7 +9,7 @@
 
 - 目前只支持 hooks
 - 基于 react+typescript 的项目
-- loader 会被被打断的情况下不适用
+- 重新生成 locales 后需要重启项目
 
 ## 如何使用
 
