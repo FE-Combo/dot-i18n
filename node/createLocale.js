@@ -5,7 +5,7 @@ const path = require("path");
 const shelljs = require("shelljs");
 const babelParser = require("@babel/parser");
 const babelTraverse = require("@babel/traverse");
-const {findI18nTag, spawn} = require("./kit");
+const {spawn} = require("./kit");
 
 let result = {};
 let currentTime = new Date().getTime();
@@ -25,7 +25,7 @@ function analyzeLocale(source, languages) {
                 babelTraverse.default(ast, {
                     CallExpression(path) {
                         const i18nContainer = path.get("i18n").container;
-                        if (!i18nContainer.callee.object) {
+                        if (!i18nContainer.callee.object && i18nContainer.callee.name === "i18n") {
                             const arguments = i18nContainer.arguments;
                             const value = arguments && arguments[0] && arguments[0].value;
                             const language = (languages && languages[0]) || "zh";

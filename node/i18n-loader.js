@@ -4,11 +4,11 @@ const babelTraverse = require("@babel/traverse");
 const babelGenerator = require("@babel/generator");
 const babelTypes = require("@babel/types");
 const i18nStore = require("./i18n-store");
-const {findI18nTag} = require("./kit");
 
 module.exports = function (context) {
     let nextContext = context;
     const i18nConfig = i18nStore.getConfig();
+    let reverseLocaleString = "";
 
     if (nextContext.includes(`<${i18nConfig.template}`) || nextContext.includes(`${i18nConfig.template}(`)) {
         const importTemplate = `import * as _$$I18nStore from "${i18nConfig.isDev ? "../node/i18n-store.js" : "dot-i18n/node/i18n-store.js"}";\n`;
@@ -25,14 +25,15 @@ module.exports = function (context) {
         babelTraverse.default(ast, {
             CallExpression(path) {
                 const container = path.get("i18n").container;
-                if (container.callee.name === "i18n") {
+                if (!container.callee.object && container.callee.name === "i18n") {
+                    reverseLocaleString = `const _$$reverseLocaleString = '${JSON.stringify(i18nStore.getReverseLocale())}';\n`;
                     container.callee.name = `_$$I18nStore.t`;
                     const arguments = container.arguments;
                     if (arguments.length === 1) {
                         arguments.push({type: "StringLiteral", value: "global"});
                     }
                     arguments.push({type: "Identifier", name: "_$$t"});
-                    arguments.push({type: "StringLiteral", value: JSON.stringify(i18nStore.getReverseLocale())});
+                    arguments.push({type: "Identifier", name: "_$$reverseLocaleString"});
                 }
             },
             FunctionDeclaration(path) {
@@ -69,7 +70,9 @@ module.exports = function (context) {
                 }
             },
         });
-        return babelGenerator.default(ast).code;
+
+        const resultContext = `${reverseLocaleString}${babelGenerator.default(ast).code}`;
+        return resultContext;
     }
     return nextContext;
 };

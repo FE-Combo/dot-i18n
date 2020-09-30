@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as I18nStore from "../node/i18n-store.js";
 import locales from "./locales"
 import ReactDOM from "react-dom";
@@ -7,14 +7,32 @@ I18nStore.createContext();
 const I18nContext = I18nStore.getContext();
 
 
+const test = {
+    i18n: function (text: string) {
+        return text
+    }
+}
+
+
 const App = (props: any) => {
     const { text = "" } = props;
+    const happy = i18n("快乐")
+    const iii = test.i18n("测试");
+
+    useEffect(() => {
+        (window as any).i18n = (text: string) => text
+        // Don't allow
+        i18n("全局测试")
+    }, [])
+
     return (
         <div>
             {text}
             <i18n>中秋</i18n>
             <i18n>国庆</i18n>
             <i18n>团圆</i18n>
+            {happy}
+            {iii}
             <MyApp text={<div>
                 <div>
                     <div>
