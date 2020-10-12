@@ -4,7 +4,7 @@ export type I18NOptions =
     | {
           namespace?: string;
           language?: string;
-          [key: string]: string;
+          replace?: object;
       }
     | string;
 

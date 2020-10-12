@@ -16,19 +16,20 @@ const test = {
 
 const App = (props: any) => {
     const { text = "" } = props;
-    const happy = i18n("快乐")
+    const v = "vvv"
+    const happy = i18n("value快乐{value}", { replace: { "{value}": v } })
     const iii = test.i18n("测试");
 
     useEffect(() => {
-        (window as any).i18n = (text: string) => text
+        // (window as any).i18n = (text: string) => text
         // Don't allow
-        i18n("全局测试")
+        // i18n("全局测试")
     }, [])
 
     return (
         <div>
             {text}
-            <i18n>中秋</i18n>
+            <i18n>中秋value</i18n>
             <i18n>国庆</i18n>
             <i18n>团圆</i18n>
             {happy}

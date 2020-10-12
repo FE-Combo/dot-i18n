@@ -36,14 +36,22 @@ module.exports = {
         return cache.reverseLocale;
     },
     t: function (value, options, currentLocale, reverseLocaleString) {
+        let result = value;
         var namespace = typeof options === ("string" ? options : options && options.namespace) || "global";
+        const replaceVariable = options && options.replace;
         var reverseLocale = JSON.parse(reverseLocaleString);
         if (reverseLocale && reverseLocale[namespace] && reverseLocale[namespace][value] && currentLocale && currentLocale[namespace]) {
             var code = reverseLocale[namespace][value];
             if (currentLocale[namespace][code]) {
-                return currentLocale[namespace][code];
+                result = currentLocale[namespace][code];
             }
         }
-        return value;
+        if (replaceVariable) {
+            Object.keys(replaceVariable).forEach((key) => {
+                result = result.replaceAll(key, replaceVariable[key]);
+            });
+        }
+        console.log(result);
+        return result;
     },
 };
