@@ -51,7 +51,6 @@ module.exports = {
                 result = result.replaceAll(key, replaceVariable[key]);
             });
         }
-        console.log(result);
         return result;
     },
 };
