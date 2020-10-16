@@ -36,9 +36,9 @@ module.exports = {
         return cache.reverseLocale;
     },
     t: function (value, options, currentLocale, reverseLocaleString) {
-        let result = value;
+        var result = value;
         var namespace = typeof options === ("string" ? options : options && options.namespace) || "global";
-        const replaceVariable = options && options.replace;
+        var replaceVariable = options && options.replace;
         var reverseLocale = JSON.parse(reverseLocaleString);
         if (reverseLocale && reverseLocale[namespace] && reverseLocale[namespace][value] && currentLocale && currentLocale[namespace]) {
             var code = reverseLocale[namespace][value];
@@ -47,7 +47,7 @@ module.exports = {
             }
         }
         if (replaceVariable) {
-            Object.keys(replaceVariable).forEach((key) => {
+            Object.keys(replaceVariable).forEach(function (key) {
                 result = result.replaceAll(key, replaceVariable[key]);
             });
         }
