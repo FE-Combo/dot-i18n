@@ -8,8 +8,8 @@
 ## 前置条件
 
 - 目前只支持 hooks
-- i18n 作为该库的关键字
 - 基于 react+typescript 的项目
+- i18n 作为该库的关键字，且只能在组件下使用
 - 出现多语言配置不生效，重新生成 locales 后需要重启项目
 - 尽量使用 xml`<i18n>test</i18n>`的方式，少使用 function`i18n("test")`,前者性能优于后者
 - 文案中不允许存在变量，若出现变量只能使用 function 方式解决`i18n("test{v}",{replace:{"{v}":"变量"}})`
