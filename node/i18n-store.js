@@ -48,7 +48,7 @@ module.exports = {
         }
         if (replaceVariable) {
             Object.keys(replaceVariable).forEach(function (key) {
-                result = result.replaceAll(key, replaceVariable[key]);
+                result = result.replace(new RegExp(key,"g"), replaceVariable[key]);
             });
         }
         return result;
