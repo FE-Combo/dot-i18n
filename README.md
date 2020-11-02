@@ -68,6 +68,18 @@
 
   ```
 
+- 配置 tsconfig
+
+```
+{
+  "compilerOptions": {
+    "typeRoots": ["./xxx/xxx/index.d.ts"],
+  },
+  "exclude": ["node_modules"]
+}
+
+```
+
 - 使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言
 
 - 词条导出(ts->excel)
