@@ -6,13 +6,11 @@ import MyApp from "./MyApp"
 I18nStore.createContext();
 const I18nContext = I18nStore.getContext();
 
-
 const test = {
     i18n: function (text: string) {
         return text
     }
 }
-
 
 const App = (props: any) => {
     const { text = "" } = props;
@@ -41,11 +39,9 @@ const App = (props: any) => {
                     </div>
                 </div>
             </div>} />
-
         </div>
     );
 };
-
 
 class Index extends React.Component {
     render() {
@@ -56,7 +52,6 @@ class Index extends React.Component {
         );
     }
 }
-
 
 const rootElement: HTMLDivElement = document.createElement("div");
 rootElement.id = "framework-app-root";

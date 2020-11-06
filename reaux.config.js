@@ -2,7 +2,8 @@ const path = require("path");
 
   module.exports = {
     baseConfig:function (config) {
-        config.entry = path.resolve(__dirname,"./src/App.tsx")
+        config.entry = path.resolve(__dirname,"./demo/App.tsx")
+        config.htmlTemplate = path.resolve(__dirname,"./demo/index.html")
         return config;
       },
     webpackDevConfig:function (config){

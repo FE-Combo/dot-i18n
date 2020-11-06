@@ -1,6 +1,6 @@
 {
-  "source": "/src",
-  "localePath": "/src/locales",
+  "source": "/demo",
+  "localePath": "/demo/locales",
   "exportExcelPath": "/.i18n/result.xlsx",
   "importExcelPath": "/.i18n/result.xlsx",
   "languages": ["zh", "en"],

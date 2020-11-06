@@ -1,4 +1,4 @@
-// In dev env and under this path, don't use i18n
+// In dev env and under this path, don't use i18n, because auto import dot-i18n
 
 import React from "react";
 

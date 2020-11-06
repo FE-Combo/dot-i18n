@@ -151,9 +151,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^16.9.11":
-  version "16.9.55"
-  resolved "https://registry.npmjs.org/@types/react/-/react-16.9.55.tgz#47078587f5bfe028a23b6b46c7b94ac0d436acff"
-  integrity sha512-6KLe6lkILeRwyyy7yG9rULKJ0sXplUsl98MGoCfpteXf9sPWFWWMknDcsvubcpaTdBuxtsLF6HDUwdApZL/xIg==
+  version "16.9.56"
+  resolved "https://registry.npmjs.org/@types/react/-/react-16.9.56.tgz#ea25847b53c5bec064933095fc366b1462e2adf0"
+  integrity sha512-gIkl4J44G/qxbuC6r2Xh+D3CGZpJ+NdWTItAPmZbR5mUS+JQ8Zvzpl0ea5qT/ZT3ZNTUcDKUVqV3xBE8wv/DyQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -941,9 +941,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001154:
-  version "1.0.30001154"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001154.tgz#f3bbc245ce55e4c1cd20fa731b097880181a7f17"
-  integrity sha512-y9DvdSti8NnYB9Be92ddMZQrcOe04kcQtcxtBx4NkB04+qZ+JUWotnXBJTmxlKudhxNTQ3RRknMwNU2YQl/Org==
+  version "1.0.30001156"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001156.tgz#75c20937b6012fe2b02ab58b30d475bf0718de97"
+  integrity sha512-z7qztybA2eFZTB6Z3yvaQBIoJpQtsewRD74adw2UbRWwsRq3jIPvgrQGawBMbfafekQaD21FWuXNcywtTDGGCw==
 
 cfb@>=0.10.0, cfb@^1.1.4:
   version "1.2.0"
@@ -1755,9 +1755,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.585:
-  version "1.3.588"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.588.tgz#c6515571737bfb42678115a5eaa818384593a9a5"
-  integrity sha512-0zr+ZfytnLeJZxGgmEpPTcItu5Mm4A5zHPZXLfHcGp0mdsk95rmD7ePNewYtK1yIdLbk8Z1U2oTRRfOtR4gbYg==
+  version "1.3.589"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.589.tgz#bd26183ed8697dde6ac19acbc16a3bf33b1f8220"
+  integrity sha512-rQItBTFnol20HaaLm26UgSUduX7iGerwW7pEYX17MB1tI6LzFajiLV7iZ7LVcUcsN/7HrZUoCLrBauChy/IqEg==
 
 elliptic@^6.5.3:
   version "6.5.3"
@@ -4429,6 +4429,26 @@ readdirp@~3.5.0:
   dependencies:
     picomatch "^2.2.1"
 
+reaux-cli@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/reaux-cli/-/reaux-cli-0.0.1.tgz#54be6ce93eb1e6c7c3546afb3e0bf00379276a66"
+  integrity sha512-IQSlIBdhLLZx0jNzvJ3v3mrNwni0Gwb6dxORph79sYTPLcS5Xw1wGF071oWo2JbKg/yaiWF3BdEVngZdlCa9Aw==
+  dependencies:
+    "@types/node" "^14.6.0"
+    commander "^6.2.0"
+    file-loader "4.0.0"
+    fork-ts-checker-webpack-plugin "1.3.7"
+    fs-extra "^9.0.1"
+    html-webpack-plugin "^4.3.0"
+    optimize-css-assets-webpack-plugin "5.0.3"
+    prettier "2.0.5"
+    terser-webpack-plugin "^3.0.6"
+    ts-loader "6.0.4"
+    tslib "1.10.0"
+    typescript "3.9.5"
+    webpack "4.35.3"
+    webpack-dev-server "^3.11.0"
+
 rechoir@^0.6.2:
   version "0.6.2"
   resolved "https://registry.npmjs.org/rechoir/-/rechoir-0.6.2.tgz#85204b54dba82d5742e28c96756ef43af50e3384"
@@ -4564,29 +4584,6 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
-
-rtd-server@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.npmjs.org/rtd-server/-/rtd-server-0.0.8.tgz#bcab1abe82cbb2ab34aaa0afd619554a8ef579b7"
-  integrity sha512-Ol4IIVwqmbbV7ct+nLLpyKiRQxmA+dzTChfPkTaMmxGPFr98BgpzPF+r6vunZ9QAlZFAgpG0EZhnwBOdZGcKzw==
-  dependencies:
-    "@types/node" "^14.6.0"
-    "@types/react" "^16.9.11"
-    "@types/react-dom" "^16.9.8"
-    commander "^6.2.0"
-    file-loader "4.0.0"
-    fork-ts-checker-webpack-plugin "1.3.7"
-    html-webpack-plugin "^4.3.0"
-    optimize-css-assets-webpack-plugin "5.0.3"
-    prettier "2.0.5"
-    react "^16.9.0"
-    react-dom "^16.11.0"
-    terser-webpack-plugin "^3.0.6"
-    ts-loader "6.0.4"
-    tslib "1.10.0"
-    typescript "3.9.5"
-    webpack "4.35.3"
-    webpack-dev-server "^3.11.0"
 
 run-queue@^1.0.0, run-queue@^1.0.3:
   version "1.0.3"

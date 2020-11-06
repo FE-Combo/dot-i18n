@@ -6,8 +6,7 @@
   "module": "node/index.js",
   "types": "node/index.d.ts",
   "scripts": {
-    "start": "rtd start",
-    "build": "rm -rf dist && rtd build",
+    "start": "rc start",
     "ts2excel": "node ./node/ts2excel.js",
     "excel2ts": "node ./node/excel2ts.js",
     "locales": "node ./node/createLocale.js",
@@ -16,7 +15,11 @@
   "author": "vocoWone",
   "license": "ISC",
   "devDependencies": {
-    "rtd-server": "^0.0.8"
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.8",
+    "reaux-cli": "^0.0.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.11.0"
   },
   "dependencies": {
     "@babel/generator": "^7.11.4",
