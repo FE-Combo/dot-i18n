@@ -63,7 +63,7 @@ function execute() {
                 const namespaces = _.code.split(".");
                 let item = allLocales![language];
                 let nextItemInstance = item;
-                namespaces.forEach((namespace:string, index:number) => {
+                namespaces.forEach((namespace: string, index: number) => {
                     if (namespaces.length === index + 1) {
                         nextItemInstance[namespace] = _[language];
                     } else {

@@ -13,13 +13,11 @@ const defaultConfig = {
 };
 
 function execute() {
-    const configFilePath = path.resolve(__dirname, "../config/node.tsconfig.json");
+    const config: i18nStore.Config = {...defaultConfig, ...JSON.parse(fs.readFileSync(process.cwd() + "/i18n.json").toString())};
+    const configFilePath = path.resolve(__dirname, config.isDev ? "../config/node.tsconfig.json" : "./config/node.tsconfig.json");
     register({project: configFilePath});
-
     try {
-        const config:i18nStore.Config = {...defaultConfig, ...JSON.parse(fs.readFileSync(process.cwd() + "/i18n.json").toString())};
         i18nStore.setConfig(config);
-
         const localePath = process.cwd() + config.localePath + "/index.ts";
 
         if (fs.pathExistsSync(localePath)) {

@@ -14,10 +14,10 @@ var defaultConfig = {
     strict: true,
 };
 function execute() {
-    var configFilePath = path_1.default.resolve(__dirname, "../config/node.tsconfig.json");
+    var config = tslib_1.__assign(tslib_1.__assign({}, defaultConfig), JSON.parse(fs_extra_1.default.readFileSync(process.cwd() + "/i18n.json").toString()));
+    var configFilePath = path_1.default.resolve(__dirname, config.isDev ? "../config/node.tsconfig.json" : "./config/node.tsconfig.json");
     ts_node_1.register({ project: configFilePath });
     try {
-        var config = tslib_1.__assign(tslib_1.__assign({}, defaultConfig), JSON.parse(fs_extra_1.default.readFileSync(process.cwd() + "/i18n.json").toString()));
         i18nStore.setConfig(config);
         var localePath = process.cwd() + config.localePath + "/index.ts";
         if (fs_extra_1.default.pathExistsSync(localePath)) {

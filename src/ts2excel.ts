@@ -32,7 +32,7 @@ function execute() {
             });
         });
     } else {
-        const recursion = (item:Array<i18nStore.EXCELSheet> | object, codes:Array<number | string>) => {
+        const recursion = (item: Array<i18nStore.EXCELSheet> | object, codes: Array<number | string>) => {
             if (item instanceof Array) {
                 item.forEach((_, index) => {
                     if (typeof _ === "object") {
@@ -86,7 +86,6 @@ function execute() {
     }
 
     const languageCountArray = Array(languages!.length + 2).fill(null);
-    console.log(data)
     const worksheet = XLSX.utils.json_to_sheet(data);
     Object.keys(worksheet).forEach((_) => {
         if (/^[A-Z]+1$/.test(_)) {

@@ -25,19 +25,19 @@
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
   - prettierConfig: prettier 文件路径, 使用前请确保项目已经安装 prettier
   - strict: boolean locales 数据结构是否严格按照 language->namespace->code, 如果 strict: false 则表示 locales 结构为 language->any. default: true
-- 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/node/createLocale"`并执行`yarn locales`
+- 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/createLocale"`并执行`yarn locales`
 - webpack 中新增 loader
   ```
   {
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
-    use: { loader: 'dot-i18n/node/i18n-loader' },
+    use: { loader: 'dot-i18n/i18n-loader' },
   },
   ```
 - 项目 root 导入 I18nContext
 
   ```
-  import * as I18nStore from "dot-i18n/node/i18n-store.js";
+  import * as I18nStore from "dot-i18n/i18n-store";
   import locales from "./locales"
   I18nStore.createContext();
   const I18nContext = I18nStore.getContext();
@@ -84,11 +84,11 @@
 
 - 词条导出(ts->excel)
 
-  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/node/ts2excel"`并执行`yarn ts2excel`
+  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/ts2excel"`并执行`yarn ts2excel`
   - 源文件路径为 i18n.json 的 localePath, 目标文件路径为 i18n.json 的 exportExcelPath
 
 - 词条导入(excel->ts)
-  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/node/excel2ts"`并执行`yarn excel2ts`
+  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/excel2ts"`并执行`yarn excel2ts`
   - 源文件路径为 i18n.json 的 importExcelPath, 目标文件路径为 i18n.json 的 localePath
 
 ## Attention
@@ -102,6 +102,30 @@
 
 - Q: 对多语言中部分字体使用加粗？
 - A: 文案中保留 html tag 并使用 dangerouslySetInnerHTML. e.g: `<div dangerouslySetInnerHTML={{ __html: i18n("登录即同意<span>《{serviceAgreement}》</span>与<span>《{privacyPolicy}》</span>", { replace: { "{serviceAgreement}": i18n("服务条款"), '{privacyPolicy}': i18n("隐私政策") } }) }} />`
+
+## 雷区
+
+- return 类型问题 e.g:
+
+```
+import React, { useEffect,useState } from "react";
+const Index = (props: IProps) => {
+    const [status, setStatus] = useState(0)
+    const render = () => {
+      switch (status) {
+          case 0:
+              return <div><i18n>未实名</i18n></div>;
+          case 1:
+              return <div><i18n>已实名</i18n></div>;
+          default:
+              return null;
+      }
+    };
+
+    return render(); // 这里需要改为 return <>{render()}</>
+};
+
+```
 
 ## TODO
 

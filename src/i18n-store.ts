@@ -2,38 +2,38 @@ import React from "react";
 
 export type I18NOptions =
     | {
-        namespace?: string;
-        language?: string;
-        replace?: object
-    }
+          namespace?: string;
+          language?: string;
+          replace?: object;
+      }
     | string;
 
 export interface Config {
-    source:string;
-    localePath:string;
-    exportExcelPath:string;
-    importExcelPath:string;
-    languages:string[];
-    prettierConfig:string;
+    source: string;
+    localePath: string;
+    exportExcelPath: string;
+    importExcelPath: string;
+    languages: string[];
+    prettierConfig: string;
     isDev: boolean;
     strict: boolean;
-    template:string;
+    template: string;
 }
 
 export interface Cache {
-    context: React.Context<object>
-    config: Config
-    locales: object
-    reverseLocale: object
+    context: React.Context<object>;
+    config: Config;
+    locales: object;
+    reverseLocale: object;
 }
 
-const cache:Cache = {} as Cache;
+const cache: Cache = {} as Cache;
 
 export function useLocales() {
     return React.useContext(cache?.context);
 }
 
-export function createContext () {
+export function createContext() {
     cache.context = React.createContext({});
 }
 
@@ -41,7 +41,7 @@ export function getContext() {
     return cache.context;
 }
 
-export function setConfig(config:Config) {
+export function setConfig(config: Config) {
     cache.config = config;
 }
 
@@ -49,7 +49,7 @@ export function getConfig() {
     return cache.config;
 }
 
-export function setLocales(locales:object) {
+export function setLocales(locales: object) {
     cache.locales = locales;
 }
 
@@ -57,7 +57,7 @@ export function getLocales() {
     return cache.locales;
 }
 
-export function setReverseLocale(reverseLocale:object) {
+export function setReverseLocale(reverseLocale: object) {
     cache.reverseLocale = reverseLocale;
 }
 
@@ -65,7 +65,7 @@ export function getReverseLocale() {
     return cache.reverseLocale;
 }
 
-export function t(value:string, options:I18NOptions, currentLocale:object, reverseLocaleString:string) {
+export function t(value: string, options: I18NOptions, currentLocale: object, reverseLocaleString: string) {
     let result = value;
     const namespace = (typeof options === "string" ? options : options?.namespace) || "global";
     const replaceVariable = options?.replace;
@@ -78,44 +78,43 @@ export function t(value:string, options:I18NOptions, currentLocale:object, rever
     }
     if (replaceVariable) {
         Object.keys(replaceVariable).forEach(function (key) {
-            result = result.replace(new RegExp(key,"g"), replaceVariable[key]);
+            result = result.replace(new RegExp(key, "g"), replaceVariable[key]);
         });
     }
     return result;
 }
 
 export interface ASTContainer {
-    callee: ASTContainer$Callee
-    arguments: ASTContainer$Argument[]
-    body: ASTContainer$Body
+    callee: ASTContainer$Callee;
+    arguments: ASTContainer$Argument[];
+    body: ASTContainer$Body;
 }
 
-export interface ASTContainer$Callee{
-    object:object;
+export interface ASTContainer$Callee {
+    object: object;
     name: string;
 }
 
-export interface  ASTContainer$Argument {
+export interface ASTContainer$Argument {
     type?: string;
-    value?:string;
+    value?: string;
     name?: string;
 }
 
 export interface ASTContainer$Body {
-    body: ASTContainer$Body$Body[]
+    body: ASTContainer$Body$Body[];
 }
 
-export interface ASTContainer$Body$Body{
+export interface ASTContainer$Body$Body {
     type: string;
-    argument: ASTContainer$Body$Body$Argument
+    argument: ASTContainer$Body$Body$Argument;
 }
 
-export interface ASTContainer$Body$Body$Argument{
-    type:string;
+export interface ASTContainer$Body$Body$Argument {
+    type: string;
 }
-
 
 export interface EXCELSheet {
-    code:string;
-    [countryCode:string]: React.ReactText | undefined;
+    code: string;
+    [countryCode: string]: React.ReactText | undefined;
 }

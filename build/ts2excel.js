@@ -94,7 +94,6 @@ function execute() {
         }
     }
     var languageCountArray = Array(languages.length + 2).fill(null);
-    console.log(data);
     var worksheet = xlsx_1.default.utils.json_to_sheet(data);
     Object.keys(worksheet).forEach(function (_) {
         if (/^[A-Z]+1$/.test(_)) {

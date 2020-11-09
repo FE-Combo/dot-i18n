@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as I18nStore from "../build/i18n-store";
 import locales from "./locales"
 import ReactDOM from "react-dom";
@@ -17,12 +17,25 @@ const App = (props: any) => {
     const v = "vvv"
     const happy = i18n("value快乐{value}", { replace: { "{value}": v } })
     const iii = test.i18n("测试");
+    const [status, setStatus] = useState(0)
+
 
     useEffect(() => {
         // (window as any).i18n = (text: string) => text
         // Don't allow
         // i18n("全局测试")
     }, [])
+
+    const render = () => {
+        switch (status) {
+            case 0:
+                return <div><i18n>未实名</i18n></div>;
+            case 1:
+                return <div><i18n>已实名</i18n></div>;
+            default:
+                return null;
+        }
+    };
 
     return (
         <div>
@@ -32,6 +45,7 @@ const App = (props: any) => {
             <i18n>团圆</i18n>
             {happy}
             {iii}
+            {render()}
             <MyApp text={<div>
                 <div>
                     <div>

@@ -12,7 +12,7 @@ function default_1(context) {
     var i18nConfig = i18nStore.getConfig();
     var reverseLocaleString = "";
     if (nextContext.includes("<" + (i18nConfig === null || i18nConfig === void 0 ? void 0 : i18nConfig.template)) || nextContext.includes((i18nConfig === null || i18nConfig === void 0 ? void 0 : i18nConfig.template) + "(")) {
-        var importTemplate = "import * as _$$I18nStore from \"" + ((i18nConfig === null || i18nConfig === void 0 ? void 0 : i18nConfig.isDev) ? "../build/i18n-store.js" : "dot-i18n/node/i18n-store.js") + "\";\n";
+        var importTemplate = "import * as _$$I18nStore from \"" + ((i18nConfig === null || i18nConfig === void 0 ? void 0 : i18nConfig.isDev) ? "../build/i18n-store.js" : "dot-i18n/i18n-store") + "\";\n";
         var ast = parser_1.parse("\n    " + importTemplate + "\n    " + nextContext + "\n                ", {
             sourceType: "module",
             plugins: ["typescript", "jsx"],
@@ -21,7 +21,8 @@ function default_1(context) {
             CallExpression: function (path) {
                 var container = path.get("i18n").container;
                 if (!container.callee.object && container.callee.name === "i18n") {
-                    reverseLocaleString = "const _$$reverseLocaleString = '" + JSON.stringify(i18nStore.getReverseLocale()) + "';\n";
+                    // HACK: don't use string template
+                    reverseLocaleString = "const _$$reverseLocaleString = `" + JSON.stringify(i18nStore.getReverseLocale()) + "`;\n";
                     container.callee.name = "_$$I18nStore.t";
                     var containerArguments = container.arguments;
                     if (containerArguments.length === 1) {
@@ -72,4 +73,3 @@ function default_1(context) {
     return nextContext;
 }
 exports.default = default_1;
-;

@@ -3,15 +3,15 @@ import fs from "fs-extra";
 import * as i18nStore from "./i18n-store";
 import path from "path";
 import {ls} from "shelljs";
-import  {parse} from "@babel/parser";
-import { JSXElement,CallExpression,JSXIdentifier,JSXAttribute ,StringLiteral, JSXText} from "@babel/types";
-import babelTraverse,{NodePath} from "@babel/traverse";
+import {parse} from "@babel/parser";
+import {JSXElement, CallExpression, JSXIdentifier, JSXAttribute, StringLiteral, JSXText} from "@babel/types";
+import babelTraverse, {NodePath} from "@babel/traverse";
 import {spawn} from "./kit";
 
 let result = {};
 let currentTime = new Date().getTime();
 
-function analyzeLocale(source:string, languages:string[]) {
+function analyzeLocale(source: string, languages: string[]) {
     ls(path.join(process.cwd(), source)).forEach((file) => {
         const filePath = path.join(process.cwd(), `${source}/${file}`);
         const isFile = fs.statSync(filePath).isFile();
@@ -42,13 +42,13 @@ function analyzeLocale(source:string, languages:string[]) {
                             }
                         }
                     },
-                    JSXElement(path:NodePath<JSXElement>) {
+                    JSXElement(path: NodePath<JSXElement>) {
                         if ((path.node.openingElement?.name as JSXIdentifier)?.name === "i18n") {
                             const jsxNode = path.node;
                             const openingElement = jsxNode.openingElement;
                             const attributes = openingElement.attributes as JSXAttribute[];
                             const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
-                            const namespace = ((namespaceAttribute?.value as StringLiteral)?.value) || "global";
+                            const namespace = (namespaceAttribute?.value as StringLiteral)?.value || "global";
                             if (jsxNode.children.length === 1) {
                                 const language = (languages && languages[0]) || "zh";
                                 const value = (jsxNode.children[0] as JSXText).value;
@@ -72,7 +72,7 @@ function analyzeLocale(source:string, languages:string[]) {
     });
 }
 
-function generateLocale(config:i18nStore.Config) {
+function generateLocale(config: i18nStore.Config) {
     const languages = config.languages;
     const prettierConfig = config.prettierConfig;
     const localePath = config.localePath;
