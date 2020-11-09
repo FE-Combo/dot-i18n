@@ -1,35 +1,36 @@
-require("./preOperation");
-const fs = require("fs-extra");
-const i18nStore = require("./i18n-store");
-const path = require("path");
-const shelljs = require("shelljs");
-const babelParser = require("@babel/parser");
-const babelTraverse = require("@babel/traverse");
-const {spawn} = require("./kit");
+import "./preOperation";
+import fs from "fs-extra";
+import * as i18nStore from "./i18n-store";
+import path from "path";
+import {ls} from "shelljs";
+import  {parse} from "@babel/parser";
+import { JSXElement,CallExpression,JSXIdentifier,JSXAttribute ,StringLiteral, JSXText} from "@babel/types";
+import babelTraverse,{NodePath} from "@babel/traverse";
+import {spawn} from "./kit";
 
 let result = {};
 let currentTime = new Date().getTime();
 
-function analyzeLocale(source, languages) {
-    shelljs.ls(path.join(process.cwd(), source)).forEach((file) => {
+function analyzeLocale(source:string, languages:string[]) {
+    ls(path.join(process.cwd(), source)).forEach((file) => {
         const filePath = path.join(process.cwd(), `${source}/${file}`);
         const isFile = fs.statSync(filePath).isFile();
 
         if (isFile) {
             const fileString = fs.readFileSync(filePath, {encoding: "utf-8"});
             if ((file.endsWith("ts") || file.endsWith("tsx")) && (fileString.includes("<i18n") || fileString.includes("i18n("))) {
-                const ast = babelParser.parse(fileString, {
+                const ast = parse(fileString, {
                     sourceType: "module",
                     plugins: ["typescript", "jsx"],
                 });
-                babelTraverse.default(ast, {
-                    CallExpression(path) {
-                        const i18nContainer = path.get("i18n").container;
+                babelTraverse(ast, {
+                    CallExpression(path: NodePath<CallExpression>) {
+                        const i18nContainer = (path.get("i18n") as NodePath<CallExpression>).container as i18nStore.ASTContainer;
                         if (!i18nContainer.callee.object && i18nContainer.callee.name === "i18n") {
-                            const arguments = i18nContainer.arguments;
-                            const value = arguments && arguments[0] && arguments[0].value;
-                            const language = (languages && languages[0]) || "zh";
-                            const namespace = (arguments && arguments[2] && arguments[2].value) || "global";
+                            const containerArguments = i18nContainer.arguments;
+                            const value = containerArguments?.[0]?.value;
+                            const language = languages?.[0] || "zh";
+                            const namespace = containerArguments?.[2]?.value || "global";
                             if (!result[language]) {
                                 result[language] = {};
                             }
@@ -41,16 +42,16 @@ function analyzeLocale(source, languages) {
                             }
                         }
                     },
-                    JSXElement(path) {
-                        if (path.node.openingElement && path.node.openingElement.name && path.node.openingElement.name.name === "i18n") {
+                    JSXElement(path:NodePath<JSXElement>) {
+                        if ((path.node.openingElement?.name as JSXIdentifier)?.name === "i18n") {
                             const jsxNode = path.node;
                             const openingElement = jsxNode.openingElement;
-                            const attributes = openingElement.attributes;
+                            const attributes = openingElement.attributes as JSXAttribute[];
                             const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
-                            const namespace = (namespaceAttribute && namespaceAttribute.value.value) || "global";
+                            const namespace = ((namespaceAttribute?.value as StringLiteral)?.value) || "global";
                             if (jsxNode.children.length === 1) {
                                 const language = (languages && languages[0]) || "zh";
-                                const value = jsxNode.children[0].value;
+                                const value = (jsxNode.children[0] as JSXText).value;
                                 if (!result[language]) {
                                     result[language] = {};
                                 }
@@ -71,7 +72,7 @@ function analyzeLocale(source, languages) {
     });
 }
 
-function generateLocale(config) {
+function generateLocale(config:i18nStore.Config) {
     const languages = config.languages;
     const prettierConfig = config.prettierConfig;
     const localePath = config.localePath;
@@ -97,15 +98,15 @@ function generateLocale(config) {
 function generate() {
     const allLocales = i18nStore.getLocales();
     if (allLocales instanceof Object) {
-        result = i18nStore.getLocales();
+        result = i18nStore.getLocales()!;
     }
 
     const config = i18nStore.getConfig();
-    const languages = config.languages;
-    const source = config.source;
+    const languages = config?.languages;
+    const source = config?.source;
 
-    analyzeLocale(source, languages);
-    generateLocale(config);
+    analyzeLocale(source!, languages!);
+    generateLocale(config!);
 }
 
 generate();

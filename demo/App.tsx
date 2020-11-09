@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import * as I18nStore from "../node/i18n-store.js";
+import * as I18nStore from "../build/i18n-store";
 import locales from "./locales"
 import ReactDOM from "react-dom";
 import MyApp from "./MyApp"

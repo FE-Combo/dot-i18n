@@ -1,1 +1,1 @@
-export default {global: {"174dd55b972": "中秋", "174dd55b973": "国庆", "174dd55b974": "团圆", "174dd581f94": "回家", "174ddb463f8": "快乐", "1751cfcb7ae": "全局测试", "1751cfcb7af": "中秋value"}};
+export default {global: {"175ab014882": "value快乐{value}", "175ab014883": "中秋value", "175ab014884": "国庆", "175ab014885": "团圆", "175ab014886": "回家"}};

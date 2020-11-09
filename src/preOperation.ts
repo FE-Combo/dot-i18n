@@ -1,7 +1,7 @@
-const tsNode = require("ts-node");
-const path = require("path");
-const fs = require("fs-extra");
-const i18nStore = require("./i18n-store");
+import {register} from "ts-node";
+import path from "path";
+import fs from "fs-extra";
+import * as i18nStore from "./i18n-store";
 
 const defaultConfig = {
     localePath: "/src/locales",
@@ -14,10 +14,10 @@ const defaultConfig = {
 
 function execute() {
     const configFilePath = path.resolve(__dirname, "../config/node.tsconfig.json");
-    tsNode.register({project: configFilePath});
+    register({project: configFilePath});
 
     try {
-        const config = {...defaultConfig, ...JSON.parse(fs.readFileSync(process.cwd() + "/i18n.json"))};
+        const config:i18nStore.Config = {...defaultConfig, ...JSON.parse(fs.readFileSync(process.cwd() + "/i18n.json").toString())};
         i18nStore.setConfig(config);
 
         const localePath = process.cwd() + config.localePath + "/index.ts";

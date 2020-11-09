@@ -1,0 +1,105 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
+require("./preOperation");
+var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
+var i18nStore = tslib_1.__importStar(require("./i18n-store"));
+var path_1 = tslib_1.__importDefault(require("path"));
+var shelljs_1 = require("shelljs");
+var parser_1 = require("@babel/parser");
+var traverse_1 = tslib_1.__importDefault(require("@babel/traverse"));
+var kit_1 = require("./kit");
+var result = {};
+var currentTime = new Date().getTime();
+function analyzeLocale(source, languages) {
+    shelljs_1.ls(path_1.default.join(process.cwd(), source)).forEach(function (file) {
+        var filePath = path_1.default.join(process.cwd(), source + "/" + file);
+        var isFile = fs_extra_1.default.statSync(filePath).isFile();
+        if (isFile) {
+            var fileString = fs_extra_1.default.readFileSync(filePath, { encoding: "utf-8" });
+            if ((file.endsWith("ts") || file.endsWith("tsx")) && (fileString.includes("<i18n") || fileString.includes("i18n("))) {
+                var ast = parser_1.parse(fileString, {
+                    sourceType: "module",
+                    plugins: ["typescript", "jsx"],
+                });
+                traverse_1.default(ast, {
+                    CallExpression: function (path) {
+                        var _a, _b;
+                        var i18nContainer = path.get("i18n").container;
+                        if (!i18nContainer.callee.object && i18nContainer.callee.name === "i18n") {
+                            var containerArguments = i18nContainer.arguments;
+                            var value = (_a = containerArguments === null || containerArguments === void 0 ? void 0 : containerArguments[0]) === null || _a === void 0 ? void 0 : _a.value;
+                            var language = (languages === null || languages === void 0 ? void 0 : languages[0]) || "zh";
+                            var namespace = ((_b = containerArguments === null || containerArguments === void 0 ? void 0 : containerArguments[2]) === null || _b === void 0 ? void 0 : _b.value) || "global";
+                            if (!result[language]) {
+                                result[language] = {};
+                            }
+                            if (!result[language][namespace]) {
+                                result[language][namespace] = {};
+                            }
+                            if (value && !Object.values(result[language][namespace]).includes(value)) {
+                                result[language][namespace][(currentTime++).toString(16)] = value;
+                            }
+                        }
+                    },
+                    JSXElement: function (path) {
+                        var _a, _b, _c;
+                        if (((_b = (_a = path.node.openingElement) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.name) === "i18n") {
+                            var jsxNode = path.node;
+                            var openingElement = jsxNode.openingElement;
+                            var attributes = openingElement.attributes;
+                            var namespaceAttribute = attributes.find(function (_) { return _.name.name === "namespace"; });
+                            var namespace = ((_c = namespaceAttribute === null || namespaceAttribute === void 0 ? void 0 : namespaceAttribute.value) === null || _c === void 0 ? void 0 : _c.value) || "global";
+                            if (jsxNode.children.length === 1) {
+                                var language = (languages && languages[0]) || "zh";
+                                var value = jsxNode.children[0].value;
+                                if (!result[language]) {
+                                    result[language] = {};
+                                }
+                                if (!result[language][namespace]) {
+                                    result[language][namespace] = {};
+                                }
+                                if (value && !Object.values(result[language][namespace]).includes(value)) {
+                                    result[language][namespace][(currentTime++).toString(16)] = value;
+                                }
+                            }
+                        }
+                    },
+                });
+            }
+        }
+        else {
+            analyzeLocale(source + "/" + file, languages);
+        }
+    });
+}
+function generateLocale(config) {
+    var languages = config.languages;
+    var prettierConfig = config.prettierConfig;
+    var localePath = config.localePath;
+    fs_extra_1.default.ensureDirSync(path_1.default.join(process.cwd(), config.localePath));
+    fs_extra_1.default.ensureFileSync(path_1.default.join(process.cwd(), config.localePath + "/index.ts"));
+    var indexTemplate = "/*\n    Attention: This file is generated by \"dot-icon\", do not modify\n    ref: https://github.com/vocoWone/dot-i18n\n*/\n\n";
+    languages.forEach(function (_) {
+        fs_extra_1.default.ensureFileSync(path_1.default.join(process.cwd(), config.localePath + "/" + _ + ".ts"));
+        fs_extra_1.default.writeFileSync(path_1.default.join(process.cwd(), config.localePath + "/" + _ + ".ts"), "export default " + JSON.stringify(result[_]) + ";\n");
+        indexTemplate += "import " + _ + " from \"./" + _ + "\";\n";
+    });
+    indexTemplate += "\nexport default {" + languages.join(", ") + "};\n";
+    fs_extra_1.default.writeFileSync(path_1.default.join(process.cwd(), config.localePath + "/index.ts"), indexTemplate);
+    if (prettierConfig) {
+        kit_1.spawn("prettier", ["--config", path_1.default.join(process.cwd(), prettierConfig), "--write", path_1.default.join(process.cwd(), localePath + "/*")]);
+    }
+}
+function generate() {
+    var allLocales = i18nStore.getLocales();
+    if (allLocales instanceof Object) {
+        result = i18nStore.getLocales();
+    }
+    var config = i18nStore.getConfig();
+    var languages = config === null || config === void 0 ? void 0 : config.languages;
+    var source = config === null || config === void 0 ? void 0 : config.source;
+    analyzeLocale(source, languages);
+    generateLocale(config);
+}
+generate();

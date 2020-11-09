@@ -1,17 +1,17 @@
-require("colors");
-require("./preOperation");
-const fs = require("fs-extra");
-const XLSX = require("xlsx");
+import "colors";
+import "./preOperation";
+import fs from "fs-extra";
+import XLSX from "xlsx";
+import * as i18nStore from "./i18n-store";
 const XLSXStyle = require("xlsx-style");
-const i18nStore = require("./i18n-store");
 
 function execute() {
     const config = i18nStore.getConfig();
-    const strict = config.strict;
-    const languages = config.languages;
+    const strict = config?.strict;
+    const languages = config?.languages;
     const allLocales = i18nStore.getLocales() || {};
 
-    const data = [];
+    const data = [] as i18nStore.EXCELSheet[];
     if (strict) {
         Object.keys(allLocales).forEach((_) => {
             Object.keys(allLocales[_]).forEach((__) => {
@@ -20,10 +20,10 @@ function execute() {
                         namespace: __,
                         code: ___,
                     };
-                    languages.forEach((language) => {
+                    languages!.forEach((language) => {
                         sheet[language] = allLocales && allLocales[language] && allLocales[language][__] && allLocales[language][__][___];
                     });
-                    if (Object.values(sheet).filter((v) => v).length === languages.length + 2) {
+                    if (Object.values(sheet).filter((v) => v).length === languages!.length + 2) {
                         data.push(sheet);
                     } else {
                         data.unshift(sheet);
@@ -32,21 +32,21 @@ function execute() {
             });
         });
     } else {
-        const recursion = (item, codes) => {
+        const recursion = (item:Array<i18nStore.EXCELSheet> | object, codes:Array<number | string>) => {
             if (item instanceof Array) {
                 item.forEach((_, index) => {
                     if (typeof _ === "object") {
                         recursion(_, [...codes, index]);
                     } else if (typeof _ === "string" || typeof _ === "number") {
                         const nextCodes = [...codes];
-                        const language = nextCodes.shift();
+                        const language = nextCodes.shift()!;
                         const code = [...nextCodes, index].join(".");
                         const sheetIndex = data.findIndex((_) => _ && _.code === code);
                         if (sheetIndex !== -1) {
                             data[sheetIndex] = {...data[sheetIndex], [language]: _};
                         } else {
-                            const sheet = {code, [language]: _};
-                            languages.forEach((v) => {
+                            const sheet = {code, [language]: _} as i18nStore.EXCELSheet;
+                            languages!.forEach((v) => {
                                 if (!sheet[v]) {
                                     sheet[v] = undefined;
                                 }
@@ -62,14 +62,14 @@ function execute() {
                         recursion(item[_], [...codes, _]);
                     } else if (typeof item[_] === "string" || typeof _ === "number") {
                         const nextCodes = [...codes];
-                        const language = nextCodes.shift();
+                        const language = nextCodes.shift()!;
                         const code = [...nextCodes, _].join(".");
                         const sheetIndex = data.findIndex((_) => _ && _.code === code);
                         if (sheetIndex !== -1) {
                             data[sheetIndex] = {...data[sheetIndex], [language]: item[_]};
                         } else {
                             const sheet = {code, [language]: item[_]};
-                            languages.forEach((v) => {
+                            languages!.forEach((v) => {
                                 if (!sheet[v]) {
                                     sheet[v] = undefined;
                                 }
@@ -85,7 +85,8 @@ function execute() {
         }
     }
 
-    const languageCountArray = Array(languages.length + 2).fill(null);
+    const languageCountArray = Array(languages!.length + 2).fill(null);
+    console.log(data)
     const worksheet = XLSX.utils.json_to_sheet(data);
     Object.keys(worksheet).forEach((_) => {
         if (/^[A-Z]+1$/.test(_)) {
@@ -107,7 +108,7 @@ function execute() {
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    const excelExportFilePath = process.cwd() + config.exportExcelPath;
+    const excelExportFilePath = process.cwd() + config!.exportExcelPath;
     fs.ensureFileSync(excelExportFilePath);
     XLSXStyle.writeFile(workbook, excelExportFilePath, {bookType: "xlsx", bookSST: false, type: "binary"});
 

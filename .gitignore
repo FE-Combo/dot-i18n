@@ -2,12 +2,6 @@
 .i18n/
 dist/
 .vscode/
-/.gradle/
-output*/
-build*/
-*.iml
-/classes/
-.DS_Store
 node_modules/
 /*/yarn-error.log
 coverage/

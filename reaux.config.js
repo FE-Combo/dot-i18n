@@ -10,7 +10,7 @@ const path = require("path");
         config.module.rules.push({
             test: /\.(tsx|ts|js|jsx)$/,
             exclude: /node_modules/,
-            use: { loader: './node/i18n-loader' },
+            use: { loader: './build/i18n-loader' },
         });
         return config
       },
