@@ -1,4 +1,4 @@
-import "./preOperation";
+import "./initialize";
 import fs from "fs-extra";
 import * as i18nStore from "./i18n-store";
 import path from "path";
@@ -8,14 +8,32 @@ import {JSXElement, CallExpression, JSXIdentifier, JSXAttribute, StringLiteral, 
 import babelTraverse, {NodePath} from "@babel/traverse";
 import {spawn} from "./kit";
 
+interface MutationResultOptions{
+    language?:string;
+    namespace?:string;
+    value?:string;
+}
+
 let result = {};
 let currentTime = new Date().getTime();
+
+function mutationResult(options:MutationResultOptions){
+    const {language="zh",namespace="global",value} = options
+    if (!result[language]) {
+        result[language] = {};
+    }
+    if (!result[language][namespace]) {
+        result[language][namespace] = {};
+    }
+    if (value && !Object.values(result[language][namespace]).includes(value)) {
+        result[language][namespace][(currentTime++).toString(16)] = value;
+    }
+}
 
 function analyzeLocale(source: string, languages: string[]) {
     ls(path.join(process.cwd(), source)).forEach((file) => {
         const filePath = path.join(process.cwd(), `${source}/${file}`);
         const isFile = fs.statSync(filePath).isFile();
-
         if (isFile) {
             const fileString = fs.readFileSync(filePath, {encoding: "utf-8"});
             if ((file.endsWith("ts") || file.endsWith("tsx")) && (fileString.includes("<i18n") || fileString.includes("i18n("))) {
@@ -29,17 +47,9 @@ function analyzeLocale(source: string, languages: string[]) {
                         if (!i18nContainer.callee.object && i18nContainer.callee.name === "i18n") {
                             const containerArguments = i18nContainer.arguments;
                             const value = containerArguments?.[0]?.value;
-                            const language = languages?.[0] || "zh";
-                            const namespace = containerArguments?.[2]?.value || "global";
-                            if (!result[language]) {
-                                result[language] = {};
-                            }
-                            if (!result[language][namespace]) {
-                                result[language][namespace] = {};
-                            }
-                            if (value && !Object.values(result[language][namespace]).includes(value)) {
-                                result[language][namespace][(currentTime++).toString(16)] = value;
-                            }
+                            const language = languages?.[0];
+                            const namespace = containerArguments?.[2]?.value;
+                            mutationResult({language,namespace,value})
                         }
                     },
                     JSXElement(path: NodePath<JSXElement>) {
@@ -48,19 +58,11 @@ function analyzeLocale(source: string, languages: string[]) {
                             const openingElement = jsxNode.openingElement;
                             const attributes = openingElement.attributes as JSXAttribute[];
                             const namespaceAttribute = attributes.find((_) => _.name.name === "namespace");
-                            const namespace = (namespaceAttribute?.value as StringLiteral)?.value || "global";
+                            const namespace = (namespaceAttribute?.value as StringLiteral)?.value;
                             if (jsxNode.children.length === 1) {
-                                const language = (languages && languages[0]) || "zh";
+                                const language = languages?.[0];
                                 const value = (jsxNode.children[0] as JSXText).value;
-                                if (!result[language]) {
-                                    result[language] = {};
-                                }
-                                if (!result[language][namespace]) {
-                                    result[language][namespace] = {};
-                                }
-                                if (value && !Object.values(result[language][namespace]).includes(value)) {
-                                    result[language][namespace][(currentTime++).toString(16)] = value;
-                                }
+                                mutationResult({language,namespace,value})
                             }
                         }
                     },
@@ -72,24 +74,23 @@ function analyzeLocale(source: string, languages: string[]) {
     });
 }
 
-function generateLocale(config: i18nStore.Config) {
-    const languages = config.languages;
-    const prettierConfig = config.prettierConfig;
-    const localePath = config.localePath;
-    fs.ensureDirSync(path.join(process.cwd(), config.localePath));
-    fs.ensureFileSync(path.join(process.cwd(), `${config.localePath}/index.ts`));
+function generateLocale(config: i18nStore.Config,languages:string[]) {
+    const localePath = config.localePath || i18nStore.defaultConfig.localePath;
+    fs.ensureDirSync(path.join(process.cwd(), localePath));
+    fs.ensureFileSync(path.join(process.cwd(), `${localePath}/index.ts`));
     let indexTemplate = `/*
     Attention: This file is generated by "dot-icon", do not modify
     ref: https://github.com/vocoWone/dot-i18n
 */\n\n`;
     languages.forEach((_) => {
-        fs.ensureFileSync(path.join(process.cwd(), `${config.localePath}/${_}.ts`));
-        fs.writeFileSync(path.join(process.cwd(), `${config.localePath}/${_}.ts`), `export default ${JSON.stringify(result[_])};\n`);
+        fs.ensureFileSync(path.join(process.cwd(), `${localePath}/${_}.ts`));
+        fs.writeFileSync(path.join(process.cwd(), `${localePath}/${_}.ts`), `export default ${JSON.stringify(result?.[_]||{})};\n`);
         indexTemplate += `import ${_} from "./${_}";\n`;
     });
     indexTemplate += `\nexport default {${languages.join(", ")}};\n`;
-    fs.writeFileSync(path.join(process.cwd(), `${config.localePath}/index.ts`), indexTemplate);
+    fs.writeFileSync(path.join(process.cwd(), `${localePath}/index.ts`), indexTemplate);
 
+    const prettierConfig = config.prettierConfig;
     if (prettierConfig) {
         spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), localePath + "/*")]);
     }
@@ -98,15 +99,14 @@ function generateLocale(config: i18nStore.Config) {
 function generate() {
     const allLocales = i18nStore.getLocales();
     if (allLocales instanceof Object) {
-        result = i18nStore.getLocales()!;
+        result = {...allLocales};
     }
-
     const config = i18nStore.getConfig();
-    const languages = config?.languages;
-    const source = config?.source;
+    const languages = config?.languages || i18nStore.defaultConfig.languages;
+    const source = config?.source || i18nStore.defaultConfig.source;
 
-    analyzeLocale(source!, languages!);
-    generateLocale(config!);
+    analyzeLocale(source, languages);
+    generateLocale(config,languages);
 }
 
 generate();

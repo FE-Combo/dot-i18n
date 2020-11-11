@@ -1,4 +1,4 @@
-import "./preOperation";
+import "./initialize";
 import {parse} from "@babel/parser";
 import babelTraverse, {NodePath} from "@babel/traverse";
 import babelGenerator from "@babel/generator";

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 require("colors");
-require("./preOperation");
+require("./initialize");
 var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
 var xlsx_1 = tslib_1.__importDefault(require("xlsx"));
 var i18nStore = tslib_1.__importStar(require("./i18n-store"));

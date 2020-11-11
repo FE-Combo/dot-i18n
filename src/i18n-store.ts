@@ -21,13 +21,49 @@ export interface Config {
 }
 
 export interface Cache {
+    isInit: boolean;
     context: React.Context<object>;
     config: Config;
     locales: object;
     reverseLocale: object;
 }
 
-const cache: Cache = {} as Cache;
+export interface Locales {
+    [languageType:string]:SubLocales
+}
+
+export interface SubLocales{
+    [code:string]: React.ReactText
+}
+
+export interface ReverseLocale {
+    [value:string]: string
+}
+
+export const defaultConfig = {
+    source:"/src",
+    localePath: "/src/locales",
+    languages: ["zh", "en"],
+    template: "i18n",
+    exportExcelPath: "/.i18n/result.xlsx",
+    importExcelPath: "/.i18n/result.xlsx",
+    strict: true,
+}
+
+const cache: Cache = {
+    isInit:false,
+    config: defaultConfig,
+    locales:{} as Locales,
+    reverseLocale: {} as ReverseLocale,
+} as Cache;
+
+export function setIfInitial(isInit:boolean){
+    cache.isInit = isInit
+}
+
+export function getIfInitial(){
+    return cache.isInit
+}
 
 export function useLocales() {
     return React.useContext(cache?.context);
@@ -49,7 +85,7 @@ export function getConfig() {
     return cache.config;
 }
 
-export function setLocales(locales: object) {
+export function setLocales(locales: Locales) {
     cache.locales = locales;
 }
 
@@ -57,7 +93,7 @@ export function getLocales() {
     return cache.locales;
 }
 
-export function setReverseLocale(reverseLocale: object) {
+export function setReverseLocale(reverseLocale: ReverseLocale) {
     cache.reverseLocale = reverseLocale;
 }
 

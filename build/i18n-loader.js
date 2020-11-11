@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-require("./preOperation");
+require("./initialize");
 var parser_1 = require("@babel/parser");
 var traverse_1 = tslib_1.__importDefault(require("@babel/traverse"));
 var generator_1 = tslib_1.__importDefault(require("@babel/generator"));

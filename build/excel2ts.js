@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-require("./preOperation");
+require("./initialize");
 var path_1 = tslib_1.__importDefault(require("path"));
 var fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
 var xlsx_1 = tslib_1.__importDefault(require("xlsx"));

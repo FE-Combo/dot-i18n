@@ -1,4 +1,4 @@
-import "./preOperation";
+import "./initialize";
 import path from "path";
 import fs from "fs-extra";
 import XLSX from "xlsx";

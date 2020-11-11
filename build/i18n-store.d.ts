@@ -16,19 +16,40 @@ export interface Config {
     template: string;
 }
 export interface Cache {
+    isInit: boolean;
     context: React.Context<object>;
     config: Config;
     locales: object;
     reverseLocale: object;
 }
+export interface Locales {
+    [languageType: string]: SubLocales;
+}
+export interface SubLocales {
+    [code: string]: React.ReactText;
+}
+export interface ReverseLocale {
+    [value: string]: string;
+}
+export declare const defaultConfig: {
+    source: string;
+    localePath: string;
+    languages: string[];
+    template: string;
+    exportExcelPath: string;
+    importExcelPath: string;
+    strict: boolean;
+};
+export declare function setIfInitial(isInit: boolean): void;
+export declare function getIfInitial(): boolean;
 export declare function useLocales(): object;
 export declare function createContext(): void;
 export declare function getContext(): React.Context<object>;
 export declare function setConfig(config: Config): void;
 export declare function getConfig(): Config;
-export declare function setLocales(locales: object): void;
+export declare function setLocales(locales: Locales): void;
 export declare function getLocales(): object;
-export declare function setReverseLocale(reverseLocale: object): void;
+export declare function setReverseLocale(reverseLocale: ReverseLocale): void;
 export declare function getReverseLocale(): object;
 export declare function t(value: string, options: I18NOptions, currentLocale: object, reverseLocaleString: string): string;
 export interface ASTContainer {

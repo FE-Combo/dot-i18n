@@ -1,5 +1,5 @@
 import "colors";
-import "./preOperation";
+import "./initialize";
 import fs from "fs-extra";
 import XLSX from "xlsx";
 import * as i18nStore from "./i18n-store";

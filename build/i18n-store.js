@@ -1,9 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.t = exports.getReverseLocale = exports.setReverseLocale = exports.getLocales = exports.setLocales = exports.getConfig = exports.setConfig = exports.getContext = exports.createContext = exports.useLocales = void 0;
+exports.t = exports.getReverseLocale = exports.setReverseLocale = exports.getLocales = exports.setLocales = exports.getConfig = exports.setConfig = exports.getContext = exports.createContext = exports.useLocales = exports.getIfInitial = exports.setIfInitial = exports.defaultConfig = void 0;
 var tslib_1 = require("tslib");
 var react_1 = tslib_1.__importDefault(require("react"));
-var cache = {};
+exports.defaultConfig = {
+    source: "/src",
+    localePath: "/src/locales",
+    languages: ["zh", "en"],
+    template: "i18n",
+    exportExcelPath: "/.i18n/result.xlsx",
+    importExcelPath: "/.i18n/result.xlsx",
+    strict: true,
+};
+var cache = {
+    isInit: false,
+    config: exports.defaultConfig,
+    locales: {},
+    reverseLocale: {},
+};
+function setIfInitial(isInit) {
+    cache.isInit = isInit;
+}
+exports.setIfInitial = setIfInitial;
+function getIfInitial() {
+    return cache.isInit;
+}
+exports.getIfInitial = getIfInitial;
 function useLocales() {
     return react_1.default.useContext(cache === null || cache === void 0 ? void 0 : cache.context);
 }

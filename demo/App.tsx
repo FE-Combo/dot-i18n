@@ -40,12 +40,19 @@ const App = (props: any) => {
     return (
         <div>
             {text}
+            <br />
             <i18n>中秋value</i18n>
+            <br />
             <i18n>国庆</i18n>
+            <br />
             <i18n>团圆</i18n>
+            <br />
             {happy}
+            <br />
             {iii}
+            <br />
             {render()}
+            <br />
             <MyApp text={<div>
                 <div>
                     <div>
