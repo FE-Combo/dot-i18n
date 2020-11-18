@@ -6,7 +6,8 @@
   "module": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "start": "node ./build && rc start",
+    "watch": "tsc -w -p config/tsconfig.build.json",
+    "start": "rc start",
     "build": "node ./build.js",
     "ts2excel": "node ./build && node ./build/ts2excel.js",
     "excel2ts": "node ./build && node ./build/excel2ts.js",

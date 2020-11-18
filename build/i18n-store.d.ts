@@ -5,21 +5,20 @@ export declare type I18NOptions = {
     replace?: object;
 } | string;
 export interface Config {
-    source: string;
-    localePath: string;
+    baseUrl: string;
+    outDir: string;
     exportExcelPath: string;
     importExcelPath: string;
     languages: string[];
     prettierConfig: string;
     isDev: boolean;
     strict: boolean;
-    template: string;
 }
 export interface Cache {
     isInit: boolean;
-    context: React.Context<object>;
     config: Config;
     locales: object;
+    language: string;
     reverseLocale: object;
 }
 export interface Locales {
@@ -32,26 +31,31 @@ export interface ReverseLocale {
     [value: string]: string;
 }
 export declare const defaultConfig: {
-    source: string;
-    localePath: string;
+    baseUrl: string;
+    outDir: string;
     languages: string[];
-    template: string;
     exportExcelPath: string;
     importExcelPath: string;
     strict: boolean;
 };
 export declare function setIfInitial(isInit: boolean): void;
 export declare function getIfInitial(): boolean;
-export declare function useLocales(): object;
-export declare function createContext(): void;
-export declare function getContext(): React.Context<object>;
+export declare function setLanguage<T extends string>(language: T): void;
+export declare function getLanguage(): string;
+export declare function useLocales<T extends Locales>(): T;
 export declare function setConfig(config: Config): void;
 export declare function getConfig(): Config;
-export declare function setLocales(locales: Locales): void;
+export declare function setLocales<T extends object>(locales: T): void;
 export declare function getLocales(): object;
-export declare function setReverseLocale(reverseLocale: ReverseLocale): void;
+export declare function setReserveLocale(locales: SubLocales | object): void;
 export declare function getReverseLocale(): object;
-export declare function t(value: string, options: I18NOptions, currentLocale: object, reverseLocaleString: string): string;
+export declare function t(value: string, options: I18NOptions, currentLocale: object | null): string;
+interface LocaleProviderProps<T> {
+    locales: T;
+    language: keyof T;
+    children?: React.ReactNode | React.ReactNode[];
+}
+export declare function LocaleProvider<T extends object>(props: LocaleProviderProps<T>): JSX.Element;
 export interface ASTContainer {
     callee: ASTContainer$Callee;
     arguments: ASTContainer$Argument[];
@@ -80,3 +84,4 @@ export interface EXCELSheet {
     code: string;
     [countryCode: string]: React.ReactText | undefined;
 }
+export {};

@@ -1,5 +1,5 @@
-import "colors";
 import "./initialize";
+import "colors";
 import fs from "fs-extra";
 import XLSX from "xlsx";
 import * as i18nStore from "./i18n-store";

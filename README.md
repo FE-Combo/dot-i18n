@@ -8,6 +8,7 @@
 ## 前置条件
 
 - 目前只支持 hooks
+- 切换语种时需要重新刷新整个网站
 - 基于 react+typescript 的项目
 - i18n 作为该库的关键字，且只能在组件下使用
 - 出现多语言配置不生效，重新生成 locales 并重启项目
@@ -17,9 +18,9 @@
 ## 如何使用
 
 - yarn add dot-i18n --save
-- 项目根目录下创建 i18n.json
-  - source: string `多语言使用范围. default: /src`
-  - localePath: string `多语言词条最终生成路径. default: /src/locales`
+- 项目根目录下创建 i18n.config.json
+  - baseUrl: string `多语言使用范围. default: /src`
+  - outDir: string `多语言词条最终生成路径. default: /src/locales`
   - exportExcelPath: string `excel导出路径. default: /.i18n/result.xlsx`
   - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
@@ -85,11 +86,11 @@
 - 词条导出(ts->excel)
 
   - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/ts2excel"`并执行`yarn ts2excel`
-  - 源文件路径为 i18n.json 的 localePath, 目标文件路径为 i18n.json 的 exportExcelPath
+  - 源文件路径为 i18n.config.json 的 outDir, 目标文件路径为 i18n.config.json 的 exportExcelPath
 
 - 词条导入(excel->ts)
   - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/excel2ts"`并执行`yarn excel2ts`
-  - 源文件路径为 i18n.json 的 importExcelPath, 目标文件路径为 i18n.json 的 localePath
+  - 源文件路径为 i18n.config.json 的 importExcelPath, 目标文件路径为 i18n.config.json 的 outDir
 
 ## Attention
 
@@ -123,6 +124,29 @@ const Index = (props: IProps) => {
     };
 
     return render(); // 这里需要改为 return <>{render()}</>
+};
+
+```
+
+- 组件外部使用 i18n 问题 e.g:
+
+```
+import React, { useEffect,useState } from "react";
+i18n("global test") // 不生效，必须在组件内部使用
+const Index = (props: IProps) => {
+    return <div>test</div>
+};
+修正：
+// testGlobalI18n.ts
+export const testGlobalI18n = () => {
+    i18n("global i18n test")
+}
+// App.tsx
+import React, { useEffect,useState } from "react";
+import { testGlobalI18n } from "xxx"
+const Index = (props: IProps) => {
+    testGlobalI18n()
+    return <div>test</div>
 };
 
 ```

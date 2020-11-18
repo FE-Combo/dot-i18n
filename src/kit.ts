@@ -1,4 +1,7 @@
 import childProcess from "child_process";
+import * as i18nStore from "./i18n-store";
+import {NodePath} from "@babel/traverse";
+import {expressionStatement, identifier,BlockStatement, ArrowFunctionExpression, FunctionDeclaration} from "@babel/types";
 
 export function spawn(command: string, params: string[]) {
     const isWindows = process.platform === "win32";
@@ -14,3 +17,13 @@ export function spawn(command: string, params: string[]) {
         process.exit(1);
     }
 }
+
+export function astFunctionInsertContext (path: NodePath<FunctionDeclaration> | NodePath<ArrowFunctionExpression>){
+    const pathBody = path.get("body") as NodePath<BlockStatement>
+    const container = pathBody.container as i18nStore.ASTContainer;
+    const returnStatementItem = container?.body?.body?.find?.((_) => _.type === "ReturnStatement");
+    if (returnStatementItem && returnStatementItem.argument && (returnStatementItem.argument.type === "JSXElement" || returnStatementItem.argument.type === "JSXFragment")) {
+        pathBody.unshiftContainer("body" as any, expressionStatement(identifier("const _$$t = _$$I18nStore.useLocales()")));
+    }
+}
+

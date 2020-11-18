@@ -1,3 +1,5 @@
+declare const _$$t: object | null
+
 declare namespace JSX {
     interface IntrinsicElements {
         i18n: React.DetailedHTMLProps<any, any>;

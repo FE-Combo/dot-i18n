@@ -24,13 +24,14 @@ function spawn(command, args, errorMessage) {
     }
 }
 
-function copyPackage(){
+function copy(){
     console.info(chalk`{green.bold [task]} {white.bold copy}`);
     fs.ensureDirSync("build/config")
+    fs.copySync("src/global.d.ts", "build/global.d.ts", {dereference: true});
     fs.copySync("config/node.tsconfig.json", "build/config/node.tsconfig.json", {dereference: true});
     fs.copySync("package.json", "build/package.json", {dereference: true});
 }
 
 cleanup();
 spawn("tsc", ["-p", tsConfigBuild], "compile failed, please fix");
-copyPackage()
+copy()

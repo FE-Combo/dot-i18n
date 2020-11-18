@@ -1,15 +1,16 @@
-// In dev env and under this path, don't use i18n, because auto import dot-i18n
-
 import React from "react";
+import { testGlobalI18n } from "./index"
 
-const App = (props: any) => {
+function App(props: any) {
     const { text } = props;
+
     return (
-        <div>MyApp
+        <div>
+            MyApp {testGlobalI18n()}
             {text}
         </div>
-
     );
 };
+
 
 export default App;

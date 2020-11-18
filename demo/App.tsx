@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import * as I18nStore from "../build/i18n-store";
 import locales from "./locales"
 import ReactDOM from "react-dom";
 import MyApp from "./MyApp"
-I18nStore.createContext();
-const I18nContext = I18nStore.getContext();
+import MyApp2 from "./MyApp2"
+import MyApp3 from "./MyApp3"
 
 const test = {
     i18n: function (text: string) {
@@ -12,18 +12,20 @@ const test = {
     }
 }
 
-const App = (props: any) => {
+function App(props: any) {
     const { text = "" } = props;
+    const customLocales = I18nStore.useLocales<typeof locales["zh"]>()
     const v = "vvv"
     const happy = i18n("value快乐{value}", { replace: { "{value}": v } })
+    const happy2 = i18n("快乐2")
     const iii = test.i18n("测试");
     const [status, setStatus] = useState(0)
-
 
     useEffect(() => {
         // (window as any).i18n = (text: string) => text
         // Don't allow
         // i18n("全局测试")
+        setStatus(1)
     }, [])
 
     const render = () => {
@@ -37,6 +39,9 @@ const App = (props: any) => {
         }
     };
 
+    const myApp3Span = <span>MyApp3 span</span>
+    const memoMyApp3Span = useMemo(() => myApp3Span, [])
+
     return (
         <div>
             {text}
@@ -48,6 +53,7 @@ const App = (props: any) => {
             <i18n>团圆</i18n>
             <br />
             {happy}
+            {happy2}
             <br />
             {iii}
             <br />
@@ -60,6 +66,13 @@ const App = (props: any) => {
                     </div>
                 </div>
             </div>} />
+            <MyApp2 text="MyApp2" />
+            <MyApp2 text={<i18n>MyApp2</i18n>} /> {/* 重新render */}
+            <button onClick={() => setStatus((status + 1) % 2)}><i18n>按钮2</i18n></button>
+            <MyApp3 text={"MyApp3"} />
+            <MyApp3 text={<i18n>MyApp3</i18n>} />{/* 重新render */}
+            <MyApp3 text={memoMyApp3Span} />
+            <MyApp3 text={myApp3Span} />{/* 重新render */}
         </div>
     );
 };
@@ -67,9 +80,9 @@ const App = (props: any) => {
 class Index extends React.Component {
     render() {
         return (
-            <I18nContext.Provider value={locales.en}>
+            <I18nStore.LocaleProvider locales={locales} language="en">
                 <App />
-            </I18nContext.Provider>
+            </I18nStore.LocaleProvider >
         );
     }
 }

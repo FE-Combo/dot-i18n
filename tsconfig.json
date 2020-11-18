@@ -20,9 +20,9 @@
     "inlineSources": true,
     "declaration": true,
     "skipLibCheck": true,
-    "typeRoots": ["./demo/global.d.ts"],
+    "typeRoots": ["build/global.d.ts"],
     "paths": {
-      "@node/*": ["node/*"]
+      "@node/*": ["node/*"],
     }
   },
   "include": ["."],
