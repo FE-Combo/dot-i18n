@@ -48,9 +48,13 @@
 - 配置 tsconfig
 
 ```
+// xxx/index.d.ts
+import "dot-i18n/global";
+
+// tsconfig.js
 {
   "compilerOptions": {
-    "typeRoots": ["node_modules/dot-i18n/global.d.ts"],
+    "typeRoots": ["xxx/index.d.ts"],
   },
   "exclude": ["node_modules"]
 }
