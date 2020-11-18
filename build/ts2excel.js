@@ -94,6 +94,6 @@ function execute() {
     var excelExportFilePath = process.cwd() + config.exportExcelPath;
     fs_extra_1.default.ensureFileSync(excelExportFilePath);
     XLSXStyle.writeFile(workbook, excelExportFilePath, { bookType: "xlsx", bookSST: false, type: "binary" });
-    console.info("Build excel successfully");
+    console.info("Update excel successfully");
 }
 execute();

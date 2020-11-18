@@ -49,7 +49,7 @@
 
 ```
 // xxx/index.d.ts
-import "dot-i18n/global";
+import("dot-i18n/global")
 
 // tsconfig.js
 {
@@ -109,12 +109,13 @@ const Index = (props: IProps) => {
 ```
 import React, { useEffect,useState } from "react";
 i18n("global test") // 不生效，必须在组件内部使用
+const options = [{title:<i18n>测试</i18n>},{title:<i18n>测试2</i18n>}] //组件外部使用<i18n>会导致整个应用奔溃
 const Index = (props: IProps) => {
-    return <div>test</div>
+    return (<div>{options.map((_, index)=><span key={index}>{_}</span>)}</div>)
 };
 ```
 
-- A: 原则上不可以在组件外部使用，在组件内部调用的情况除外
+- A: 原则上不可以在组件外部使用，单可以在组件内部调用，且组件外部只能使用`i18n("测试")`不能使用`<i18n>测试</i18n>`
 
 ```
 // testGlobalI18n.ts
@@ -124,9 +125,10 @@ export const testGlobalI18n = () => {
 // App.tsx
 import React, { useEffect,useState } from "react";
 import { testGlobalI18n } from "xxx"
+const options = [{title:i18n("测试")},{title:i18n("测试2")}]
 const Index = (props: IProps) => {
     testGlobalI18n()
-    return <div>test</div>
+    return (<div>{options.map((_, index)=><span key={index}>{_}</span>)}</div>)
 };
 
 ```

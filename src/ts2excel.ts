@@ -89,7 +89,7 @@ function execute() {
     fs.ensureFileSync(excelExportFilePath);
     XLSXStyle.writeFile(workbook, excelExportFilePath, {bookType: "xlsx", bookSST: false, type: "binary"});
 
-    console.info("Build excel successfully");
+    console.info("Update excel successfully");
 }
 
 execute();
