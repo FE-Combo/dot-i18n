@@ -9,7 +9,6 @@ exports.defaultConfig = {
     languages: ["zh", "en"],
     exportExcelPath: "/.i18n/result.xlsx",
     importExcelPath: "/.i18n/result.xlsx",
-    strict: true,
 };
 var I18nContext = react_1.default.createContext({});
 var cache = {

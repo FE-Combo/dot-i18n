@@ -26,7 +26,6 @@ function execute() {
     var config = i18nStore.getConfig();
     var allLocales = i18nStore.getLocales();
     var languages = config === null || config === void 0 ? void 0 : config.languages;
-    var strict = config === null || config === void 0 ? void 0 : config.strict;
     var prettierConfig = config === null || config === void 0 ? void 0 : config.prettierConfig;
     var outDir = config === null || config === void 0 ? void 0 : config.outDir;
     if (allLocales) {
@@ -35,48 +34,31 @@ function execute() {
     var excelExportFilePath = process.cwd() + (config === null || config === void 0 ? void 0 : config.importExcelPath);
     var workbook = xlsx_1.default.readFile(excelExportFilePath, { type: "binary" });
     var data = xlsx_1.default.utils.sheet_to_json(workbook.Sheets["Sheet1"]);
-    if (strict) {
+    languages.forEach(function (language) {
+        if (!allLocales[language]) {
+            allLocales[language] = {};
+        }
         data.forEach(function (_) {
-            languages.forEach(function (__) {
-                if (_[__] && _.namespace && _.code) {
-                    if (!(allLocales === null || allLocales === void 0 ? void 0 : allLocales[__])) {
-                        allLocales[__] = {};
+            var namespaces = _.code.split(".");
+            var item = allLocales[language];
+            var nextItemInstance = item;
+            namespaces.forEach(function (namespace, index) {
+                if (namespaces.length === index + 1) {
+                    nextItemInstance[namespace] = _[language];
+                }
+                else {
+                    if (!nextItemInstance[namespace]) {
+                        nextItemInstance[namespace] = {};
                     }
-                    if (!allLocales[__][_.namespace]) {
-                        allLocales[__][_.namespace] = {};
-                    }
-                    allLocales[__][_.namespace][_.code] = _[__];
+                    nextItemInstance = nextItemInstance[namespace];
                 }
             });
         });
-    }
-    else {
-        languages.forEach(function (language) {
-            if (!allLocales[language]) {
-                allLocales[language] = {};
-            }
-            data.forEach(function (_) {
-                var namespaces = _.code.split(".");
-                var item = allLocales[language];
-                var nextItemInstance = item;
-                namespaces.forEach(function (namespace, index) {
-                    if (namespaces.length === index + 1) {
-                        nextItemInstance[namespace] = _[language];
-                    }
-                    else {
-                        if (!nextItemInstance[namespace]) {
-                            nextItemInstance[namespace] = {};
-                        }
-                        nextItemInstance = nextItemInstance[namespace];
-                    }
-                });
-            });
-        });
-    }
+    });
     generateLocale();
     if (prettierConfig) {
         kit_1.spawn("prettier", ["--config", path_1.default.join(process.cwd(), prettierConfig), "--write", path_1.default.join(process.cwd(), outDir + "/*")]);
     }
-    console.info("Build successfully");
+    console.info("Update locales successfully");
 }
 execute();

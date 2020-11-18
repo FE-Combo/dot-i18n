@@ -5,6 +5,5 @@
   "importExcelPath": "/.i18n/result.xlsx",
   "languages": ["zh", "en"],
   "prettierConfig": "/prettier.config.js",
-  "isDev": true,
-  "strict": false
+  "isDev": true
 }

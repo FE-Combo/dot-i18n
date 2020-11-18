@@ -96,5 +96,6 @@ function generate() {
     var baseUrl = (config === null || config === void 0 ? void 0 : config.baseUrl) || i18nStore.defaultConfig.baseUrl;
     analyzeLocale(baseUrl, languages);
     generateLocale(config, languages);
+    console.info("Update locales successfully");
 }
 generate();

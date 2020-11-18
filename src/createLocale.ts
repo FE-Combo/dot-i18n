@@ -107,6 +107,7 @@ function generate() {
 
     analyzeLocale(baseUrl, languages);
     generateLocale(config,languages);
+    console.info("Update locales successfully");
 }
 
 generate();

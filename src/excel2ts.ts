@@ -29,7 +29,6 @@ function execute() {
     const config = i18nStore.getConfig();
     const allLocales = i18nStore.getLocales();
     const languages = config?.languages;
-    const strict = config?.strict;
     const prettierConfig = config?.prettierConfig;
     const outDir = config?.outDir;
     if (allLocales) {
@@ -39,49 +38,32 @@ function execute() {
     const workbook = XLSX.readFile(excelExportFilePath, {type: "binary"});
     const data = XLSX.utils.sheet_to_json(workbook.Sheets["Sheet1"]) as i18nStore.EXCELSheet[];
 
-    if (strict) {
+    languages!.forEach((language) => {
+        if (!allLocales[language]) {
+            allLocales[language] = {};
+        }
         data.forEach((_) => {
-            languages!.forEach((__) => {
-                if (_[__] && _.namespace && _.code) {
-                    if (!allLocales?.[__]) {
-                        allLocales![__] = {};
+            const namespaces = _.code.split(".");
+            let item = allLocales![language];
+            let nextItemInstance = item;
+            namespaces.forEach((namespace: string, index: number) => {
+                if (namespaces.length === index + 1) {
+                    nextItemInstance[namespace] = _[language];
+                } else {
+                    if (!nextItemInstance[namespace]) {
+                        nextItemInstance[namespace] = {};
                     }
-                    if (!allLocales![__][_.namespace]) {
-                        allLocales![__][_.namespace] = {};
-                    }
-                    allLocales![__][_.namespace][_.code] = _[__];
+                    nextItemInstance = nextItemInstance[namespace];
                 }
             });
         });
-    } else {
-        languages!.forEach((language) => {
-            if (!allLocales![language]) {
-                allLocales![language] = {};
-            }
-
-            data.forEach((_) => {
-                const namespaces = _.code.split(".");
-                let item = allLocales![language];
-                let nextItemInstance = item;
-                namespaces.forEach((namespace: string, index: number) => {
-                    if (namespaces.length === index + 1) {
-                        nextItemInstance[namespace] = _[language];
-                    } else {
-                        if (!nextItemInstance[namespace]) {
-                            nextItemInstance[namespace] = {};
-                        }
-                        nextItemInstance = nextItemInstance[namespace];
-                    }
-                });
-            });
-        });
-    }
-
+    });
+    
     generateLocale();
     if (prettierConfig) {
         spawn("prettier", ["--config", path.join(process.cwd(), prettierConfig), "--write", path.join(process.cwd(), outDir + "/*")]);
     }
-    console.info("Build successfully");
+    console.info("Update locales successfully");
 }
 
 execute();

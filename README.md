@@ -10,8 +10,8 @@
 - 目前只支持 hooks
 - 切换语种时需要重新刷新整个网站
 - 基于 react+typescript 的项目
-- i18n 作为该库的关键字，且只能在组件下使用
 - 出现多语言配置不生效，重新生成 locales 并重启项目
+- i18n 作为该库的关键字，且只能在 LocaleProvider 组件下使用
 - 尽量使用 xml`<i18n>test</i18n>`的方式，少使用 function`i18n("test")`,前者性能优于后者
 - 文案中不允许存在变量，若出现变量只能使用 function 方式解决`i18n("test{v}",{replace:{"{v}":i18n("变量")}})`
 
@@ -25,7 +25,6 @@
   - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
   - prettierConfig: prettier 文件路径, 使用前请确保项目已经安装 prettier
-  - strict: boolean locales 数据结构是否严格按照 language->namespace->code, 如果 strict: false 则表示 locales 结构为 language->any. default: true
 - 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/createLocale"`并执行`yarn locales`
 - webpack 中新增 loader
   ```
@@ -35,38 +34,15 @@
     use: { loader: 'dot-i18n/i18n-loader' },
   },
   ```
-- 项目 root 导入 I18nContext
+- 项目 root 导入 LocaleProvider
 
   ```
-  import * as I18nStore from "dot-i18n/i18n-store";
-  import locales from "./locales"
-  I18nStore.createContext();
-  const I18nContext = I18nStore.getContext();
+    import * as I18nStore from "dot-i18n/i18n-store";
+    import locales from "./locales"
 
-       <I18nContext.Provider value={locales.zh}>
-           test
-        </I18nContext.Provider>
-  ```
-
-- 新增全局 tag/function->i18n
-
-  ```
-  declare namespace JSX {
-      interface IntrinsicElements {
-          i18n: React.DetailedHTMLProps<any, any>;
-      }
-  }
-
-  type I18NOptions =
-      | {
-          namespace?: string;
-          language?: string;
-          [key: string]: string;
-      }
-      | string;
-
-  declare const i18n: (value: string, options?: I18NOptions) => any;
-
+    <LocaleProvider.Provider locale={locales} language="zh">
+        test
+    </LocaleProvider.Provider>
   ```
 
 - 配置 tsconfig
@@ -74,14 +50,14 @@
 ```
 {
   "compilerOptions": {
-    "typeRoots": ["./xxx/xxx/index.d.ts"],
+    "typeRoots": ["node_modules/dot-i18n/global.d.ts"],
   },
   "exclude": ["node_modules"]
 }
 
 ```
 
-- 使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言
+- 应用中直接使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言配置
 
 - 词条导出(ts->excel)
 
@@ -92,10 +68,6 @@
   - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/excel2ts"`并执行`yarn excel2ts`
   - 源文件路径为 i18n.config.json 的 importExcelPath, 目标文件路径为 i18n.config.json 的 outDir
 
-## Attention
-
-- 原生的 xlsx 不支持表格的样式设置, 选择使用 xlsx-style 可以设置表格样式
-
 ## Q&A
 
 - Q: 旧项目怎么做迁移？
@@ -104,9 +76,7 @@
 - Q: 对多语言中部分字体使用加粗？
 - A: 文案中保留 html tag 并使用 dangerouslySetInnerHTML. e.g: `<div dangerouslySetInnerHTML={{ __html: i18n("登录即同意<span>《{serviceAgreement}》</span>与<span>《{privacyPolicy}》</span>", { replace: { "{serviceAgreement}": i18n("服务条款"), '{privacyPolicy}': i18n("隐私政策") } }) }} />`
 
-## 雷区
-
-- return 类型问题 e.g:
+- Q: 组件 return 类型问题不是 JSX
 
 ```
 import React, { useEffect,useState } from "react";
@@ -128,7 +98,9 @@ const Index = (props: IProps) => {
 
 ```
 
-- 组件外部使用 i18n 问题 e.g:
+- A: 把`return return render()` 改为 `return <>{render()}</>`
+
+- Q: 组件外部使用 i18n 问题
 
 ```
 import React, { useEffect,useState } from "react";
@@ -136,7 +108,11 @@ i18n("global test") // 不生效，必须在组件内部使用
 const Index = (props: IProps) => {
     return <div>test</div>
 };
-修正：
+```
+
+- A: 原则上不可以在组件外部使用，在组件内部调用的情况除外
+
+```
 // testGlobalI18n.ts
 export const testGlobalI18n = () => {
     i18n("global i18n test")
@@ -153,9 +129,6 @@ const Index = (props: IProps) => {
 
 ## TODO
 
-- 完善文案变量处理
-- 支持配置文件
-- js->ts
 - 支持类组件
 - 开发环境性能瓶颈检测
 - css （伪类）多语言处理

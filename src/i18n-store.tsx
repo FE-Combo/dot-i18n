@@ -16,7 +16,6 @@ export interface Config {
     languages: string[];
     prettierConfig: string;
     isDev: boolean;
-    strict: boolean;
 }
 
 export interface Cache {
@@ -45,7 +44,6 @@ export const defaultConfig = {
     languages: ["zh", "en"],
     exportExcelPath: "/.i18n/result.xlsx",
     importExcelPath: "/.i18n/result.xlsx",
-    strict: true,
 }
 const I18nContext = React.createContext({} as SubLocales)
 

@@ -12,7 +12,6 @@ export interface Config {
     languages: string[];
     prettierConfig: string;
     isDev: boolean;
-    strict: boolean;
 }
 export interface Cache {
     isInit: boolean;
@@ -36,7 +35,6 @@ export declare const defaultConfig: {
     languages: string[];
     exportExcelPath: string;
     importExcelPath: string;
-    strict: boolean;
 };
 export declare function setIfInitial(isInit: boolean): void;
 export declare function getIfInitial(): boolean;

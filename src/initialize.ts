@@ -16,7 +16,7 @@ function execute() {
     try {
         const outDir = process.cwd() + config.outDir + "/index.ts";
         if (fs.pathExistsSync(outDir)) {
-            const allLocales:i18nStore.Locales  = require(process.cwd() + config.outDir + "/index.ts")?.default || {};
+            const allLocales:i18nStore.Locales = require(process.cwd() + config.outDir + "/index.ts")?.default || {};
             i18nStore.setLocales(allLocales);
 
             const mainLanguage = config?.languages?.[0] || "zh";
