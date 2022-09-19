@@ -141,7 +141,7 @@ export function LocaleProvider<T extends object>(props: LocaleProviderProps<T>) 
         setLocales(locales)
         // TODO: Object cannot guarantee order
         setReserveLocale(locales?.[Object.keys(locales)?.[0] ?? "zh"] || {})
-        setLanguage(language + "")
+        setLanguage(language.toString())
     }
 
     return (

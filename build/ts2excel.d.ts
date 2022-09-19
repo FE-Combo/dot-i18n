@@ -1,2 +1,0 @@
-import "./initialize";
-import "colors";
