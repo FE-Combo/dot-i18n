@@ -2,7 +2,7 @@ import "./initialize";
 import path from "path";
 import fs from "fs-extra";
 import XLSX from "xlsx";
-import * as i18nStore from "./i18n-store";
+import * as i18nStore from "./store";
 import {spawn} from "./kit";
 
 let result = {};

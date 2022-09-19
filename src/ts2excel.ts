@@ -2,7 +2,7 @@ import "./initialize";
 import "colors";
 import fs from "fs-extra";
 import XLSX from "xlsx";
-import * as i18nStore from "./i18n-store";
+import * as i18nStore from "./store";
 const XLSXStyle = require("xlsx-style");
 // 原生的 xlsx 不支持表格的样式设置, 选择使用 xlsx-style 可以设置表格样式
 

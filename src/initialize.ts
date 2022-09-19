@@ -1,7 +1,7 @@
 import {register} from "ts-node";
 import path from "path";
 import fs from "fs-extra";
-import * as i18nStore from "./i18n-store";
+import * as i18nStore from "./store";
 
 function execute() {
     const configJsonPath = process.cwd() + "/i18n.config.json";

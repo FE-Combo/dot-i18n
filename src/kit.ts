@@ -1,5 +1,5 @@
 import childProcess from "child_process";
-import * as i18nStore from "./i18n-store";
+import * as i18nStore from "./store";
 import {NodePath} from "@babel/traverse";
 import {expressionStatement, identifier,BlockStatement, ArrowFunctionExpression, FunctionDeclaration} from "@babel/types";
 

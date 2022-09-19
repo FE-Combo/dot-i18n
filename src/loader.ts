@@ -3,7 +3,7 @@ import {parse} from "@babel/parser";
 import babelTraverse, {NodePath} from "@babel/traverse";
 import babelGenerator from "@babel/generator";
 import { identifier, CallExpression, ArrowFunctionExpression, FunctionDeclaration, JSXElement, JSXIdentifier, JSXAttribute, StringLiteral, stringLiteral, JSXText,importDeclaration,importDefaultSpecifier,expressionStatement} from "@babel/types";
-import * as i18nStore from "./i18n-store";
+import * as i18nStore from "./store";
 import {astFunctionInsertContext} from "./kit"
 
 export default function (context: string) {

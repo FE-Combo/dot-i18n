@@ -1,6 +1,6 @@
 import "./initialize";
 import fs from "fs-extra";
-import * as i18nStore from "./i18n-store";
+import * as i18nStore from "./store";
 import path from "path";
 import {ls} from "shelljs";
 import {parse} from "@babel/parser";
