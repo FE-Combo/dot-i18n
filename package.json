@@ -21,7 +21,8 @@
     "release:patch": "standard-version --release-as patch"
   },
   "files": [
-    "build"
+    "build",
+    "global.d.ts"
   ],
   "author": "vocoWone",
   "license": "ISC",
@@ -38,8 +39,7 @@
     "reaux-cli": "^0.0.1",
     "standard-version": "^9.5.0",
     "@types/shelljs": "^0.8.8",
-    "fs-extra": "^9.0.1",
-    "shelljs": "^0.8.4"
+    "fs-extra": "^9.0.1"
   },
   "dependencies": {
     "@babel/generator": "^7.11.4",
@@ -48,6 +48,7 @@
     "@babel/types": "^7.11.0",
     "tslib": "^2.4.0",
     "xlsx": "^0.16.6",
-    "xlsx-style": "^0.8.13"
+    "xlsx-style": "^0.8.13",
+    "shelljs": "^0.8.4"
   }
 }

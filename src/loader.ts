@@ -26,7 +26,7 @@ export default function (context: string) {
         );
         babelTraverse(ast, {
             Program(path) {
-                path.node.body.unshift(importDeclaration([importDefaultSpecifier(identifier("* as _$$I18nStore"))],process.env.DOT_I18N_DEV?stringLiteral("../build/store"):stringLiteral("dot-i18n/store")))
+                path.node.body.unshift(importDeclaration([importDefaultSpecifier(identifier("* as _$$I18nStore"))],process.env.DOT_I18N_DEV?stringLiteral("../build/store"):stringLiteral("dot-i18n/build/store")))
             },
             FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
                 astFunctionInsertContext(path)

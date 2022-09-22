@@ -36,18 +36,18 @@
   {
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
-    use: { loader: 'dot-i18n/loader' },
+    use: { loader: 'dot-i18n/build/loader' },
   },
   ```
 - 项目 root 导入 LocaleProvider
 
   ```
-    import * as I18nStore from "dot-i18n/store";
+    import {store as I18nStore} from "dot-i18n";
     const locales = require("./locales")
 
-    <LocaleProvider.Provider locale={locales.zh}>
+    <I18nStore.LocaleProvider locale={locales.zh}>
         test
-    </LocaleProvider.Provider>
+    </I18nStore.LocaleProvider>
   ```
 
 - 配置 tsconfig
@@ -69,15 +69,15 @@ import("dot-i18n/global")
 - 应用中直接使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言配置
 
 - 词条扫描(项目->ts)
-  - package.json 中新增 script `"scanning": "node ./node_modules/dot-i18n/node/scanning"`并执行`yarn scanning`
+  - package.json 中新增 script `"scanning": "node ./node_modules/dot-i18n/build/node/scanning"`并执行`yarn scanning`
   - 源文件路径为 i18n.config.json 的 baseUrl, 目标文件路径为 i18n.config.json 的 outDir
 
 - 词条导出(ts->excel)
-  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/node/ts2excel"`并执行`yarn ts2excel`
+  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/build/node/ts2excel"`并执行`yarn ts2excel`
   - 源文件路径为 i18n.config.json 的 outDir, 目标文件路径为 i18n.config.json 的 exportExcelPath
 
 - 词条导入(excel->ts)
-  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/node/excel2ts"`并执行`yarn excel2ts`
+  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/build/node/excel2ts"`并执行`yarn excel2ts`
   - 源文件路径为 i18n.config.json 的 importExcelPath, 目标文件路径为 i18n.config.json 的 outDir
 
 ## Q&A
@@ -146,3 +146,4 @@ const Index = (props: IProps) => {
 - 支持类组件
 - 开发环境性能瓶颈检测
 - css （伪类）多语言处理
+- lerna
