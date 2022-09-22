@@ -1,8 +1,8 @@
 import React from "react";
-import { testGlobalI18n } from "./index"
+import {testGlobalI18n} from "./index";
 
 function App(props: any) {
-    const { text } = props;
+    const {text} = props;
 
     return (
         <div>
@@ -10,7 +10,6 @@ function App(props: any) {
             {text}
         </div>
     );
-};
-
+}
 
 export default App;

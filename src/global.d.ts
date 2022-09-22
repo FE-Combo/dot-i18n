@@ -15,3 +15,4 @@ type I18NOptions =
     | string;
 
 declare const i18n: (value: string, options?: I18NOptions) => any;
+

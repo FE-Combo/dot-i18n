@@ -11,65 +11,51 @@ export type I18NOptions =
 export interface Config {
     baseUrl: string;
     outDir: string;
+    filename: string;
     exportExcelPath: string;
     importExcelPath: string;
     languages: string[];
-    prettierConfig: string;
-    isDev: boolean;
+    prettierConfig?: string;
 }
 
 export interface Cache {
-    isInit: boolean;
     config: Config;
     locales: object;
     language: string;
-    reverseLocale: object;
 }
 
 export interface Locales {
-    [languageType: string]: SubLocales
+    [code: string]: Locales |  React.ReactText
 }
 
-export interface SubLocales {
-    [code: string]: React.ReactText
-}
 
-export interface ReverseLocale {
-    [value: string]: string
-}
-
-export const defaultConfig = {
+export const defaultConfig: Config = {
     baseUrl: "/src",
     outDir: "/src/locales",
+    filename: "index",
     languages: ["zh", "en"],
     exportExcelPath: "/.i18n/result.xlsx",
     importExcelPath: "/.i18n/result.xlsx",
+
 }
-const I18nContext = React.createContext({} as SubLocales)
+const I18nContext = React.createContext({} as Locales)
 
 const cache: Cache = {
-    isInit: false,
     language: "zh",
     config: defaultConfig,
     locales: {},
-    reverseLocale: {} as ReverseLocale,
-} as Cache;
+};
 
-export function setIfInitial(isInit: boolean) {
-    cache.isInit = isInit
+// utf-8 => base64
+export function encode(code: string):string {
+    return Buffer.from(code, 'utf-8').toString("base64")
 }
 
-export function getIfInitial() {
-    return cache.isInit
+// base64 => utf-8
+export function decode(code: string) {
+    return Buffer.from(code, "base64").toString('utf-8')
 }
 
-export function setLanguage<T extends string>(language: T) {
-    cache.language = language
-}
-
-export function getLanguage() {
-    return cache.language;
-}
 
 export function useLocales<T extends Locales>() {
     return React.useContext<T>(I18nContext as any);
@@ -91,31 +77,14 @@ export function getLocales() {
     return cache.locales;
 }
 
-export function setReserveLocale(locales: SubLocales | object) {
-    cache.reverseLocale = Object.keys(locales).reduce((preObject, namespace) => {
-        preObject[namespace] = Object.keys(locales[namespace]).reduce((preSubObject, code) => {
-            const value = preSubObject[code];
-            preSubObject[value] = code;
-            delete preSubObject[code];
-            return preSubObject;
-        }, { ...locales[namespace] });
-        return preObject
-    }, {} as ReverseLocale)
-}
-
-export function getReverseLocale() {
-    return cache.reverseLocale;
-}
-
 export function t(value: string, options: I18NOptions, currentLocale: object | null) {
     let result = value;
-    const nextLocale = currentLocale || cache?.locales?.[cache.language] || {}
-    if (nextLocale) {
-        const reverseLocale = cache.reverseLocale
+    const code = encode(value);
+    const nextLocale = currentLocale || cache?.locales || {}
+    if (code && nextLocale) {
         const namespace = (typeof options === "string" ? options : options?.namespace) || "global";
         const replaceVariable = options?.replace;
-        if (reverseLocale?.[namespace]?.[value] && nextLocale?.[namespace]) {
-            const code = reverseLocale[namespace][value];
+        if (nextLocale?.[namespace] && nextLocale[namespace][code]) {
             if (nextLocale[namespace][code]) {
                 result = nextLocale[namespace][code];
             }
@@ -129,59 +98,16 @@ export function t(value: string, options: I18NOptions, currentLocale: object | n
     return result;
 }
 
-interface LocaleProviderProps<T> {
-    locales: T
-    language: keyof T
+interface LocaleProviderProps {
+    locales: Locales
     children?: React.ReactNode | React.ReactNode[]
 }
 
-export function LocaleProvider<T extends object>(props: LocaleProviderProps<T>) {
-    const { children, locales, language } = props
-    if (Object.keys(cache.locales).length <= 0) {
-        setLocales(locales)
-        // TODO: Object cannot guarantee order
-        setReserveLocale(locales?.[Object.keys(locales)?.[0] ?? "zh"] || {})
-        setLanguage(language.toString())
-    }
-
+export function LocaleProvider(props: LocaleProviderProps) {
+    const { children, locales } = props
     return (
-        <I18nContext.Provider value={locales?.[language] ?? {}}>
+        <I18nContext.Provider value={locales || {}}>
             {children}
         </I18nContext.Provider>
     )
-}
-
-export interface ASTContainer {
-    callee: ASTContainer$Callee;
-    arguments: ASTContainer$Argument[];
-    body: ASTContainer$Body;
-}
-
-export interface ASTContainer$Callee {
-    object: object;
-    name: string;
-}
-
-export interface ASTContainer$Argument {
-    type?: string;
-    value?: string;
-    name?: string;
-}
-
-export interface ASTContainer$Body {
-    body: ASTContainer$Body$Body[];
-}
-
-export interface ASTContainer$Body$Body {
-    type: string;
-    argument: ASTContainer$Body$Body$Argument;
-}
-
-export interface ASTContainer$Body$Body$Argument {
-    type: string;
-}
-
-export interface EXCELSheet {
-    code: string;
-    [countryCode: string]: React.ReactText | undefined;
 }

@@ -1,5 +1,9 @@
 [![npm version](https://img.shields.io/npm/v/dot-i18n.svg?style=flat)](https://www.npmjs.com/package/dot-i18n)
 
+### 使用之前先思考一个问题🤔
+- [中文作为key到底会存在什么样的问题？](https://www.zhihu.com/question/263924505)
+- 我的结论是除了规范问题没有任何隐患，既然可以为什么不用呢🤣（放心❗️本框架并没有使用中文作为key）
+
 ## 动机
 
 - 无痕多语言配置开发环境
@@ -21,6 +25,7 @@
 - 项目根目录下创建 i18n.config.json
   - baseUrl: string `多语言使用范围. default: /src`
   - outDir: string `多语言词条最终生成路径. default: /src/locales`
+  - filename: string `多语言词条最终生成文件名. default: index`
   - exportExcelPath: string `excel导出路径. default: /.i18n/result.xlsx`
   - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
@@ -31,16 +36,16 @@
   {
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
-    use: { loader: 'dot-i18n/i18n-loader' },
+    use: { loader: 'dot-i18n/loader' },
   },
   ```
 - 项目 root 导入 LocaleProvider
 
   ```
-    import * as I18nStore from "dot-i18n/i18n-store";
-    import locales from "./locales"
+    import * as I18nStore from "dot-i18n/store";
+    const locales = require("./locales")
 
-    <LocaleProvider.Provider locale={locales} language="zh">
+    <LocaleProvider.Provider locale={locales.zh}>
         test
     </LocaleProvider.Provider>
   ```
@@ -63,13 +68,16 @@ import("dot-i18n/global")
 
 - 应用中直接使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言配置
 
-- 词条导出(ts->excel)
+- 词条扫描(项目->ts)
+  - package.json 中新增 script `"scanning": "node ./node_modules/dot-i18n/node/scanning"`并执行`yarn scanning`
+  - 源文件路径为 i18n.config.json 的 baseUrl, 目标文件路径为 i18n.config.json 的 outDir
 
-  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/ts2excel"`并执行`yarn ts2excel`
+- 词条导出(ts->excel)
+  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n/node/ts2excel"`并执行`yarn ts2excel`
   - 源文件路径为 i18n.config.json 的 outDir, 目标文件路径为 i18n.config.json 的 exportExcelPath
 
 - 词条导入(excel->ts)
-  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/excel2ts"`并执行`yarn excel2ts`
+  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n/node/excel2ts"`并执行`yarn excel2ts`
   - 源文件路径为 i18n.config.json 的 importExcelPath, 目标文件路径为 i18n.config.json 的 outDir
 
 ## Q&A
