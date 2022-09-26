@@ -1,6 +1,6 @@
 {
   "name": "dot-i18n",
-  "version": "0.0.22-beta.1",
+  "version": "0.0.22-beta.2",
   "description": "Multilingual solution.",
   "main": "build/index.js",
   "module": "build/index.js",
