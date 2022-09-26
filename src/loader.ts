@@ -25,15 +25,16 @@ export default function (context: string) {
             }
         );
         babelTraverse(ast, {
+            // @babel/types/lib/index.d.ts => declare type Node
             Program(path) {
                 path.node.body.unshift(importDeclaration([importDefaultSpecifier(identifier("* as _$$I18nStore"))],process.env.DOT_I18N_DEV?stringLiteral("../build/store"):stringLiteral("dot-i18n/build/store")))
             },
             FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
                 astFunctionInsertContext(path)
             },
-            ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>) {
-                astFunctionInsertContext(path)
-            },
+            // ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>) {
+            //     astFunctionInsertContext(path)
+            // },
             CallExpression(path: NodePath<CallExpression>) {
                 // e.g: i18n("测试")
                 const container = (path.get("i18n") as NodePath<CallExpression>).container as ASTContainer;
@@ -46,6 +47,7 @@ export default function (context: string) {
                     containerArguments.push({type: "Identifier", name: "typeof _$$t ==='object'? _$$t : null"});
                 }
             },
+            // TODO: JSXOpeningElement、JSXClosingElement
             JSXElement(path: NodePath<JSXElement>) {
                 // e.g : <i18n>测试</18n>
                 if ((path?.node?.openingElement?.name as JSXIdentifier)?.name === "i18n") {
@@ -61,7 +63,7 @@ export default function (context: string) {
                             openingElement.attributes = [];
                             (openingElement.name as JSXIdentifier).name = "";
                             (jsxNode.closingElement!.name as JSXIdentifier).name = "";
-                            (jsxNode.children[0] as JSXText).value = `{_$$t && _$$t["${namespace}"] && _$$t["${namespace}"]["${code}"] || "${value}"}`;
+                            (jsxNode.children[0] as JSXText).value = `{_$$t?.["${namespace}"]?.["${code}"] || "${value}"}`;
                         }
                     }
                 }

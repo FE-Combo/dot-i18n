@@ -1,15 +1,13 @@
 import React from "react";
 import {testGlobalI18n} from "./index";
 
-function App(props: any) {
-    const {text} = props;
-
+function Index() {
     return (
         <div>
-            MyApp {testGlobalI18n()}
-            {text}
+            <i18n>国庆快乐</i18n> 
+            自定义hooks无法生效：{testGlobalI18n()}
         </div>
     );
 }
 
-export default App;
+export default Index;

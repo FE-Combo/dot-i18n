@@ -4,21 +4,22 @@
 
 const zh = {
     global: {
-        dmFsdWXlv6vkuZB7dmFsdWV9: "value快乐{value}",
-        "5b+r5LmQMg==": "快乐2",
-        "5pyq5a6e5ZCN": "未实名",
-        "5bey5a6e5ZCN": "已实名",
-        "5Lit56eLdmFsdWU=": "中秋value",
-        "5Zu95bqG": "国庆",
-        "5Zui5ZyG": "团圆",
-        "5Zue5a62": "回家",
-        TXlBcHAy: "MyApp2",
-        "5oyJ6ZKuMg==": "按钮2",
-        TXlBcHAz: "MyApp3",
-        "Z2xvYmFsIGkxOG4gdGVzdA==": "global i18n test",
-    },
+        ZG90LWkxOG57dmFsdWV9: "dot-i18n{value}", 
+        "Z29vZG1hbg==": "goodman",
+        "5Zu95bqG5b+r5LmQ": "国庆快乐", 
+        "Z2xvYmFsIGkxOG4=":"global i18n", 
+        "54mb6YC8": "牛逼"
+    }
 };
 
-const en = {global: {dmFsdWXlv6vkuZB7dmFsdWV9: "value快乐{value}2"}};
+const en = {
+    global: {
+        ZG90LWkxOG57dmFsdWV9: "dot-i18n2{value}", 
+        "Z29vZG1hbg==": "goodman2", 
+        "5Zu95bqG5b+r5LmQ": "国庆快乐2", 
+        "Z2xvYmFsIGkxOG4=": "global i18n2", 
+        "54mb6YC8": "牛逼2"
+    }
+};
 
 module.exports = {zh, en};
