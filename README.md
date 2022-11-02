@@ -6,7 +6,7 @@
 
 ## 动机
 
-- 无痕多语言配置开发环境
+- 无痕多语言配置
 - 便携式 ts/excel 转换
 
 ## 约定
@@ -16,8 +16,9 @@
 - i18n 作为该库的关键字，且只能在 LocaleProvider 组件下使用
 - 不允许在全局变量中挂载`i18n`。e.g: window.i18n = (text: string) => text
 - 尽量使用 xml`<i18n>test</i18n>`的方式，少使用 function`i18n("test")`,前者性能优于后者
+- 目前只支持 hooks，且只能在组件内只用；无法应用于自定义hooks中，只能在返回类型为`JSXElement`的hooks中使用
 - 文案中不允许存在变量，若出现变量只能使用 function 方式解决`i18n("test{v}",{replace:{"{v}":i18n("变量")}})`
-- 目前只支持 hooks；`i18n`只能用于函数声明语句（function func(){}）；若组件内嵌套函数使用`i18n`则只能使用函数表达式（const func = ()=>{}）；无法应用于自定义hooks中，只能在返回类型为`JSXElement`的hooks中使用
+
 
 ## 如何使用
 
@@ -30,7 +31,7 @@
   - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
   - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
   - prettierConfig: prettier 文件路径, 使用前请确保项目已经安装 prettier
-- 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/createLocale"`并执行`yarn locales`
+- 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/build/scanning"`并执行`yarn locales`
 - webpack 中新增 loader
   ```
   {
@@ -111,6 +112,10 @@ const Index = (props: IProps) => {
 ```
 
 - A: 把`return render()` 改为 `return <>{render()}</>`
+
+- Q: SyntaxError: This experimental syntax requires enabling one of the following parser plugin(s): "decorators-legacy", "decorators".
+
+- A: 1.decorators检查是否配置正确；2.检查非jsx函数中是否使用了`i18n`
 
 ## TODO
 

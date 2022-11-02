@@ -1,25 +1,26 @@
 import React from "react";
 import * as I18nStore from "../build/store";
 import ReactDOM from "react-dom";
-// import MyApp from "./MyApp";
+import MyApp from "./MyApp";
 const locales = require("./locales");
 
-function App() {
-    // const text = i18n("dot-i18n{value}", {replace: {"{value}": i18n("牛逼")}});
 
-    const render = function () {
+
+const App = () => {
+    const text = i18n("dot-i18n{value}", {replace: {"{value}": i18n("牛逼")}});
+
+    const render = ()=>{
         return (
             <div>
                 <i18n>goodman</i18n>
             </div>
         );
     };
-    
     return (
         <div>
-            {/* {text} */}
+            {text}
             <br />
-            {/* <MyApp /> */}
+            <MyApp />
             {render()}
         </div>
     );
@@ -28,7 +29,7 @@ function App() {
 class Index extends React.Component {
     render() {
         return (
-            <I18nStore.LocaleProvider locales={locales.en}>
+            <I18nStore.LocaleProvider locales={locales.zh}>
                 <App />
             </I18nStore.LocaleProvider>
         );

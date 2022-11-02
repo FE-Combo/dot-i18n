@@ -8,10 +8,13 @@ import {ASTContainer} from "./type";
 // 函数插入 context
 export function astFunctionInsertContext (path: NodePath<FunctionDeclaration> | NodePath<ArrowFunctionExpression>){
     const pathBody = path.get("body") as NodePath<BlockStatement>
-    const container = pathBody.container as ASTContainer;
-    const returnStatementItem = container?.body?.body?.find?.((_) => _.type === "ReturnStatement");
-    if (returnStatementItem && returnStatementItem.argument && (returnStatementItem.argument.type === "JSXElement" || returnStatementItem.argument.type === "JSXFragment")) {
-        pathBody.unshiftContainer("body" as any, expressionStatement(identifier("const _$$t = _$$I18nStore.useLocales()")));
+    // 只在顶层函数中插入 useLocales
+    if(pathBody.scope.path.context.scope.block.type==="Program") {
+        const container = pathBody.container as ASTContainer;
+        const returnStatementItem = container?.body?.body?.find?.((_) => _.type === "ReturnStatement");
+        if (returnStatementItem && returnStatementItem.argument && (returnStatementItem.argument.type === "JSXElement" || returnStatementItem.argument.type === "JSXFragment")) {
+            pathBody.unshiftContainer("body" as any, expressionStatement(identifier("const _$$t = _$$I18nStore.useLocales()")));
+        }
     }
 }
 
@@ -32,9 +35,9 @@ export default function (context: string) {
             FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
                 astFunctionInsertContext(path)
             },
-            // ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>) {
-            //     astFunctionInsertContext(path)
-            // },
+            ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>) {
+                astFunctionInsertContext(path)
+            },
             CallExpression(path: NodePath<CallExpression>) {
                 // e.g: i18n("测试")
                 const container = (path.get("i18n") as NodePath<CallExpression>).container as ASTContainer;
@@ -70,6 +73,9 @@ export default function (context: string) {
             },
         });
         const result = babelGenerator(ast).code
+        if(process.env.DOT_I18N_DEBUG) {
+            console.info(result)
+        }
         return result;
     }
     return nextContext;
