@@ -19,7 +19,7 @@ export function spawn(command: string, params: string[]) {
 }
 
 // 生成本地词条
-export function generateLocale(config: i18nStore.Config,languages:string[], result: object) {
+export function generateLocale(config: i18nStore.Config, languages: string[], result: object) {
     const outDir = config.outDir || i18nStore.defaultConfig.outDir;
     const filename = config.filename || i18nStore.defaultConfig.filename;
     fs.ensureDirSync(path.join(process.cwd(), outDir));
@@ -29,7 +29,7 @@ export function generateLocale(config: i18nStore.Config,languages:string[], resu
 */\n\n`;
 
     languages.forEach((_) => {
-        indexTemplate += `\nconst ${_} = ${JSON.stringify(result?.[_]||{})};\n`;
+        indexTemplate += `\nconst ${_} = ${JSON.stringify(result?.[_] || {})};\n`;
     });
     indexTemplate += `\nmodule.exports = {${languages.join(", ")}};\n`;
 

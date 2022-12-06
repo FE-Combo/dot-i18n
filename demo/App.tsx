@@ -4,12 +4,10 @@ import ReactDOM from "react-dom";
 import MyApp from "./MyApp";
 const locales = require("./locales");
 
-
-
 const App = () => {
     const text = i18n("dot-i18n{value}", {replace: {"{value}": i18n("牛逼")}});
 
-    const render = ()=>{
+    const render = () => {
         return (
             <div>
                 <i18n>goodman</i18n>
@@ -24,12 +22,12 @@ const App = () => {
             {render()}
         </div>
     );
-}
+};
 
 class Index extends React.Component {
     render() {
         return (
-            <I18nStore.LocaleProvider locales={locales.zh}>
+            <I18nStore.LocaleProvider locales={locales.en}>
                 <App />
             </I18nStore.LocaleProvider>
         );

@@ -2,10 +2,10 @@ import React from "react";
 
 export type I18NOptions =
     | {
-        namespace?: string;
-        language?: string;
-        replace?: object;
-    }
+          namespace?: string;
+          language?: string;
+          replace?: object;
+      }
     | string;
 
 export interface Config {
@@ -16,6 +16,7 @@ export interface Config {
     importExcelPath: string;
     languages: string[];
     prettierConfig?: string;
+    clearLegacy?: boolean;
 }
 
 export interface Cache {
@@ -25,9 +26,8 @@ export interface Cache {
 }
 
 export interface Locales {
-    [code: string]: Locales |  React.ReactText
+    [code: string]: Locales | React.ReactText;
 }
-
 
 export const defaultConfig: Config = {
     baseUrl: "/src",
@@ -36,9 +36,8 @@ export const defaultConfig: Config = {
     languages: ["zh", "en"],
     exportExcelPath: "/.i18n/result.xlsx",
     importExcelPath: "/.i18n/result.xlsx",
-
-}
-const I18nContext = React.createContext({} as Locales)
+};
+const I18nContext = React.createContext({} as Locales);
 
 const cache: Cache = {
     language: "zh",
@@ -47,15 +46,14 @@ const cache: Cache = {
 };
 
 // utf-8 => base64
-export function encode(code: string):string {
-    return Buffer.from(code, 'utf-8').toString("base64")
+export function encode(code: string): string {
+    return Buffer.from(code, "utf-8").toString("base64");
 }
 
 // base64 => utf-8
 export function decode(code: string) {
-    return Buffer.from(code, "base64").toString('utf-8')
+    return Buffer.from(code, "base64").toString("utf-8");
 }
-
 
 export function useLocales<T extends Locales>() {
     return React.useContext<T>(I18nContext as any);
@@ -80,7 +78,7 @@ export function getLocales() {
 export function t(value: string, options: I18NOptions, currentLocale: object | null) {
     let result = value;
     const code = encode(value);
-    const nextLocale = currentLocale || cache?.locales || {}
+    const nextLocale = currentLocale || cache?.locales || {};
     if (code && nextLocale) {
         const namespace = (typeof options === "string" ? options : options?.namespace) || "global";
         const replaceVariable = options?.replace;
@@ -99,15 +97,11 @@ export function t(value: string, options: I18NOptions, currentLocale: object | n
 }
 
 interface LocaleProviderProps {
-    locales: Locales
-    children?: React.ReactNode | React.ReactNode[]
+    locales: Locales | {};
+    children?: React.ReactNode | React.ReactNode[];
 }
 
 export function LocaleProvider(props: LocaleProviderProps) {
-    const { children, locales } = props
-    return (
-        <I18nContext.Provider value={locales || {}}>
-            {children}
-        </I18nContext.Provider>
-    )
+    const {children, locales} = props;
+    return <I18nContext.Provider value={locales || {}}>{children}</I18nContext.Provider>;
 }

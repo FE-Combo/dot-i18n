@@ -7,31 +7,30 @@ import {spawn, generateLocale} from "./kit";
 
 let result = {};
 
-// 翻译后端excel导入项目转换成ts
+// 翻译后将excel导入项目转换成ts
 function execute() {
     const config = i18nStore.getConfig();
     const allLocales = i18nStore.getLocales();
     const languages = config?.languages;
     const prettierConfig = config?.prettierConfig;
     const outDir = config?.outDir;
-    if (allLocales) {
+    if (allLocales && !config.clearLegacy) {
         result = allLocales;
     }
     const excelExportFilePath = process.cwd() + config?.importExcelPath;
     const workbook = XLSX.readFile(excelExportFilePath, {type: "binary"});
-    const data = XLSX.utils.sheet_to_json(workbook.Sheets["Sheet1"]) as EXCELSheet[] || [];
+    const data = (XLSX.utils.sheet_to_json(workbook.Sheets["Sheet1"]) as EXCELSheet[]) || [];
 
     // TODO: flat
     // data.map(_=>unflatten(languages.reduce((pre, current)=>({...pre, [`${current}.${_.code}`]:_?.[current]}), {})));
-    
+
     languages!.forEach((language) => {
-        if (!allLocales[language]) {
-            allLocales[language] = {};
+        if (!result[language]) {
+            result[language] = {};
         }
         data.forEach((_) => {
             const namespaces = _.code.split(".");
-            let item = allLocales![language];
-            let nextItemInstance = item;
+            let nextItemInstance = result![language];
             namespaces.forEach((namespace: string, index: number) => {
                 if (namespaces.length === index + 1) {
                     nextItemInstance[namespace] = _[language];

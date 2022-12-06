@@ -5,20 +5,21 @@ import path from "path";
 import {ls} from "shelljs";
 import {parse} from "@babel/parser";
 import {JSXElement, CallExpression, JSXIdentifier, JSXAttribute, StringLiteral, JSXText} from "@babel/types";
-import {ASTContainer} from "../type"
+import {ASTContainer} from "../type";
 import babelTraverse, {NodePath} from "@babel/traverse";
+import lodash from "lodash";
 import {generateLocale} from "./kit";
 
-interface MutationResultOptions{
-    language?:string;
-    namespace?:string;
-    value?:string;
+interface MutationResultOptions {
+    language?: string;
+    namespace?: string;
+    value?: string;
 }
 
 let result = {};
 
-function mutationResult(options:MutationResultOptions){
-    const {language="zh",namespace="global",value} = options
+function mutationResult(options: MutationResultOptions) {
+    const {language = "zh", namespace = "global", value} = options;
     if (!result[language]) {
         result[language] = {};
     }
@@ -46,10 +47,10 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
                         const i18nContainer = (path.get("i18n") as NodePath<CallExpression>).container as ASTContainer;
                         if (!i18nContainer.callee.object && i18nContainer.callee.name === "i18n") {
                             const containerArguments = i18nContainer.arguments;
-                            const value = containerArguments?.[0]?.value;
+                            const value = containerArguments?.[0]?.value?.toString()?.trim();
                             const language = languages?.[0];
                             const namespace = containerArguments?.[2]?.value;
-                            mutationResult({language,namespace,value})
+                            mutationResult({language, namespace, value});
                         }
                     },
                     JSXElement(path: NodePath<JSXElement>) {
@@ -62,7 +63,7 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
                             if (jsxNode.children.length === 1) {
                                 const language = languages?.[0];
                                 const value = (jsxNode.children[0] as JSXText).value;
-                                mutationResult({language,namespace,value})
+                                mutationResult({language, namespace, value});
                             }
                         }
                     },
@@ -75,18 +76,30 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
 }
 
 // 扫描项目下所有文案，并在本地生成ts
-// 已存在的文案不会更新
 function generate() {
-    const allLocales = i18nStore.getLocales();
-    if (allLocales instanceof Object) {
-        result = {...allLocales};
-    }
     const config = i18nStore.getConfig();
     const languages = config?.languages || i18nStore.defaultConfig.languages;
     const baseUrl = config?.baseUrl || i18nStore.defaultConfig.baseUrl;
+    // 项目现有 locales
+    const currentLocales = i18nStore.getLocales();
 
+    // 扫描项目多语言
     analyzeLocale(baseUrl, languages);
-    generateLocale(config,languages, result);
+
+    // 根据 clearLegacy 判断是否保留遗留无用词条
+    // TODO: 目前只能清除主语言下的词条
+    const nextResult = lodash.mergeWith(result, currentLocales, (objectValue, srcValue) => {
+        if (config.clearLegacy) {
+            if (objectValue) {
+                return objectValue;
+            } else {
+                return srcValue;
+            }
+        }
+    });
+    // 重新生成 locales
+    generateLocale(config, languages, nextResult);
+
     console.info("Update locales successfully");
 }
 

@@ -4,7 +4,7 @@ import {testGlobalI18n} from "./index";
 function Index() {
     return (
         <div>
-            <i18n>国庆快乐</i18n> 
+            <i18n>国庆快乐</i18n>
             自定义hooks无法生效：{testGlobalI18n()}
         </div>
     );

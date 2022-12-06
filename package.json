@@ -9,9 +9,9 @@
     "watch": "tsc -w -p config/tsconfig.build.json",
     "dev": "yarn build && DOT_I18N_DEV=true DOT_I18N_DEBUG=0 rc start",
     "build": "node ./script/build.js",
-    "ts2excel": "node ./build && node ./build/node/ts2excel.js",
-    "excel2ts": "node ./build && node ./build/node/excel2ts.js",
-    "scanning": "node ./build && node ./build/node/scanning.js",
+    "ts2excel": "yarn build && node ./build/node/ts2excel.js",
+    "excel2ts": "yarn build && node ./build/node/excel2ts.js",
+    "scanning": "yarn build && node ./build/node/scanning.js",
     "format": "prettier --config config/prettier.json --write \"{src,test}/**/*.{ts,tsx,js,less}\"",
     "release": "standard-version",
     "release:beta": "standard-version --prerelease beta",
@@ -33,22 +33,24 @@
     "@types/node": "^14.14.6",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.8",
+    "@types/shelljs": "^0.8.8",
     "chalk": "^4.1.0",
+    "fs-extra": "^9.0.1",
     "react": "^16.9.0",
     "react-dom": "^16.11.0",
     "reaux-cli": "^0.0.1",
-    "standard-version": "^9.5.0",
-    "@types/shelljs": "^0.8.8",
-    "fs-extra": "^9.0.1"
+    "standard-version": "^9.5.0"
   },
   "dependencies": {
     "@babel/generator": "^7.11.4",
     "@babel/parser": "^7.11.4",
     "@babel/traverse": "^7.12.5",
     "@babel/types": "^7.11.0",
+    "@types/lodash": "^4.14.191",
+    "lodash": "^4.17.21",
+    "shelljs": "^0.8.4",
     "tslib": "^2.4.0",
     "xlsx": "^0.16.6",
-    "xlsx-style": "^0.8.13",
-    "shelljs": "^0.8.4"
+    "xlsx-style": "^0.8.13"
   }
 }

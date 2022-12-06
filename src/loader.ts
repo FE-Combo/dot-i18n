@@ -1,15 +1,15 @@
 import {parse} from "@babel/parser";
 import babelTraverse, {NodePath} from "@babel/traverse";
 import babelGenerator from "@babel/generator";
-import { expressionStatement, identifier, CallExpression, BlockStatement, ArrowFunctionExpression, FunctionDeclaration, JSXElement, JSXIdentifier, JSXAttribute, StringLiteral, stringLiteral, JSXText,importDeclaration,importDefaultSpecifier} from "@babel/types";
+import {expressionStatement, identifier, CallExpression, BlockStatement, ArrowFunctionExpression, FunctionDeclaration, JSXElement, JSXIdentifier, JSXAttribute, StringLiteral, stringLiteral, JSXText, importDeclaration, importDefaultSpecifier} from "@babel/types";
 import * as i18nStore from "./store";
 import {ASTContainer} from "./type";
 
 // 函数插入 context
-export function astFunctionInsertContext (path: NodePath<FunctionDeclaration> | NodePath<ArrowFunctionExpression>){
-    const pathBody = path.get("body") as NodePath<BlockStatement>
+export function astFunctionInsertContext(path: NodePath<FunctionDeclaration> | NodePath<ArrowFunctionExpression>) {
+    const pathBody = path.get("body") as NodePath<BlockStatement>;
     // 只在顶层函数中插入 useLocales
-    if(pathBody.scope.path.context.scope.block.type==="Program") {
+    if (pathBody.scope.path.context.scope.block.type === "Program") {
         const container = pathBody.container as ASTContainer;
         const returnStatementItem = container?.body?.body?.find?.((_) => _.type === "ReturnStatement");
         if (returnStatementItem && returnStatementItem.argument && (returnStatementItem.argument.type === "JSXElement" || returnStatementItem.argument.type === "JSXFragment")) {
@@ -21,22 +21,20 @@ export function astFunctionInsertContext (path: NodePath<FunctionDeclaration> | 
 export default function (context: string) {
     let nextContext = context;
     if (nextContext.includes(`<i18n`) || nextContext.includes(`i18n(`)) {
-        const ast = parse(nextContext,
-            {
-                sourceType: "module",
-                plugins: ["typescript", "jsx"],
-            }
-        );
+        const ast = parse(nextContext, {
+            sourceType: "module",
+            plugins: ["typescript", "jsx"],
+        });
         babelTraverse(ast, {
             // @babel/types/lib/index.d.ts => declare type Node
             Program(path) {
-                path.node.body.unshift(importDeclaration([importDefaultSpecifier(identifier("* as _$$I18nStore"))],process.env.DOT_I18N_DEV?stringLiteral("../build/store"):stringLiteral("dot-i18n/build/store")))
+                path.node.body.unshift(importDeclaration([importDefaultSpecifier(identifier("* as _$$I18nStore"))], process.env.DOT_I18N_DEV ? stringLiteral("../build/store") : stringLiteral("dot-i18n/build/store")));
             },
             FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
-                astFunctionInsertContext(path)
+                astFunctionInsertContext(path);
             },
             ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>) {
-                astFunctionInsertContext(path)
+                astFunctionInsertContext(path);
             },
             CallExpression(path: NodePath<CallExpression>) {
                 // e.g: i18n("测试")
@@ -66,15 +64,15 @@ export default function (context: string) {
                             openingElement.attributes = [];
                             (openingElement.name as JSXIdentifier).name = "";
                             (jsxNode.closingElement!.name as JSXIdentifier).name = "";
-                            (jsxNode.children[0] as JSXText).value = `{_$$t?.["${namespace}"]?.["${code}"] || "${value}"}`;
+                            (jsxNode.children[0] as JSXText).value = `{_$$t?.["${namespace}"]?.["${code}"] || "${value?.toString()?.trim?.()}"}`;
                         }
                     }
                 }
             },
         });
-        const result = babelGenerator(ast).code
-        if(process.env.DOT_I18N_DEBUG) {
-            console.info(result)
+        const result = babelGenerator(ast).code;
+        if (process.env.DOT_I18N_DEBUG) {
+            console.info(result);
         }
         return result;
     }
