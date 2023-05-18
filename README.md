@@ -1,9 +1,5 @@
 [![npm version](https://img.shields.io/npm/v/dot-i18n.svg?style=flat)](https://www.npmjs.com/package/dot-i18n)
 
-### 使用之前先思考一个问题🤔
-- [中文作为key到底会存在什么样的问题？](https://www.zhihu.com/question/263924505)
-- 我的结论是除了规范问题没有任何隐患，既然可以为什么不用呢🤣（放心❗️本框架并没有使用中文作为key）
-
 ## 动机
 
 - 无痕多语言配置
@@ -19,6 +15,17 @@
 - 目前只支持 hooks，且只能在组件内只用；无法应用于自定义hooks中，只能在返回类型为`JSXElement`的hooks中使用
 - 文案中不允许存在变量，若出现变量只能使用 function 方式解决`i18n("test{v}",{replace:{"{v}":i18n("变量")}})`
 - 修改文案不能直接修改 locales 配置，因为文案与key是一一对应的；所以需要修改项目中i18n所对应的文案，并重新走scanning流程
+- 如果您的系统使用了 webpack 5+，那么需要添加 ProvidePlugin 到 plugins：
+  ```
+  plugins: [
+    ...,
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer']
+    }),
+    ...
+  ]
+  ```
 
 
 ## 如何使用

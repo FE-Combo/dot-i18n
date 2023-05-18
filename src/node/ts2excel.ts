@@ -64,7 +64,7 @@ function execute() {
     if (typeof allLocales === "object") {
         recursion(allLocales, []);
     }
-    
+
     const languageCountArray = Array(languages!.length + 2).fill(null);
     const worksheet = XLSX.utils.json_to_sheet(data);
     Object.keys(worksheet).forEach((_) => {

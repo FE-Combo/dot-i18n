@@ -39,7 +39,8 @@
     "react": "^16.9.0",
     "react-dom": "^16.11.0",
     "reaux-cli": "^0.0.1",
-    "standard-version": "^9.5.0"
+    "standard-version": "^9.5.0",
+    "typescript": "3.9.5"
   },
   "dependencies": {
     "@babel/generator": "^7.11.4",
