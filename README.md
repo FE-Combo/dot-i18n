@@ -98,7 +98,7 @@ import("dot-i18n/global")
 - Q: 对多语言中部分字体使用加粗？
 - A: 文案中保留 html tag 并使用 dangerouslySetInnerHTML. e.g: `<div dangerouslySetInnerHTML={{ __html: i18n("登录即同意<span>《{serviceAgreement}》</span>与<span>《{privacyPolicy}》</span>", { replace: { "{serviceAgreement}": i18n("服务条款"), '{privacyPolicy}': i18n("隐私政策") } }) }} />`
 
-- Q: 组件 return 类型问题不是 JSX
+- Q: 函数 return 类型不是 JSXElement 导致多语言失效
 
 ```
 import React, { useEffect,useState } from "react";

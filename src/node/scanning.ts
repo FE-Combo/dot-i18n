@@ -1,6 +1,6 @@
 import "./initialize";
 import fs from "fs-extra";
-import * as i18nStore from "../store";
+import DotI18n, { defaultConfig } from "../";
 import path from "path";
 import {ls} from "shelljs";
 import {parse} from "@babel/parser";
@@ -27,7 +27,7 @@ function mutationResult(options: MutationResultOptions) {
         result[language][namespace] = {};
     }
     if (value && !Object.values(result[language][namespace]).includes(value)) {
-        result[language][namespace][i18nStore.encode(value)] = value;
+        result[language][namespace][DotI18n.encode(value)] = value;
     }
 }
 
@@ -77,11 +77,11 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
 
 // 扫描项目下所有文案，并在本地生成ts
 function generate() {
-    const config = i18nStore.getConfig();
-    const languages = config?.languages || i18nStore.defaultConfig.languages;
-    const baseUrl = config?.baseUrl || i18nStore.defaultConfig.baseUrl;
+    const config = DotI18n.getConfig();
+    const languages = config?.languages || defaultConfig.languages;
+    const baseUrl = config?.baseUrl || defaultConfig.baseUrl;
     // 项目现有 locales
-    const currentLocales = i18nStore.getLocales();
+    const currentLocales = DotI18n.getLocales();
 
     // 扫描项目多语言
     analyzeLocale(baseUrl, languages);

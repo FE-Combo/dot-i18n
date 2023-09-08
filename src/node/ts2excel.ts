@@ -2,16 +2,16 @@ import "./initialize";
 import "colors";
 import fs from "fs-extra";
 import XLSX from "xlsx";
-import * as i18nStore from "../store";
+import DotI18n from "../";
 import {EXCELSheet} from "../type";
 const XLSXStyle = require("xlsx-style");
 // 原生的 xlsx 不支持表格的样式设置, 选择使用 xlsx-style 可以设置表格样式
 
 // 本地ts转换成excel（导出excel便于翻译）
 function execute() {
-    const config = i18nStore.getConfig();
+    const config = DotI18n.getConfig();
     const languages = config?.languages;
-    const allLocales = i18nStore.getLocales() || {};
+    const allLocales = DotI18n.getLocales() || {};
     const data = [] as EXCELSheet[];
     const recursion = (item: Array<EXCELSheet> | object, codes: Array<number | string>) => {
         if (item instanceof Array) {

@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs-extra";
 import childProcess from "child_process";
-import * as i18nStore from "../store";
+import {Config, defaultConfig} from "../";
 
 export function spawn(command: string, params: string[]) {
     const isWindows = process.platform === "win32";
@@ -19,9 +19,9 @@ export function spawn(command: string, params: string[]) {
 }
 
 // 生成本地词条
-export function generateLocale(config: i18nStore.Config, languages: string[], result: object) {
-    const outDir = config.outDir || i18nStore.defaultConfig.outDir;
-    const filename = config.filename || i18nStore.defaultConfig.filename;
+export function generateLocale(config: Config, languages: string[], result: object) {
+    const outDir = config.outDir || defaultConfig.outDir;
+    const filename = config.filename || defaultConfig.filename;
     fs.ensureDirSync(path.join(process.cwd(), outDir));
     fs.ensureFileSync(path.join(process.cwd(), `${outDir}/${filename}.js`));
     let indexTemplate = `/*

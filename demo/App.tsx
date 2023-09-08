@@ -1,5 +1,5 @@
 import React from "react";
-import * as I18nStore from "../build/store";
+import DotI18n from "../build";
 import ReactDOM from "react-dom";
 import MyApp from "./MyApp";
 const locales = require("./locales");
@@ -27,9 +27,9 @@ const App = () => {
 class Index extends React.Component {
     render() {
         return (
-            <I18nStore.LocaleProvider locales={locales.en}>
+            <DotI18n.Provider locales={locales.en}>
                 <App />
-            </I18nStore.LocaleProvider>
+            </DotI18n.Provider>
         );
     }
 }

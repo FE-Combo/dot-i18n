@@ -1,15 +1,15 @@
 import fs from "fs-extra";
-import * as i18nStore from "../store";
+import DotI18n from "..";
 
 let initial = false;
 
 // 采集数据存入store
 function execute() {
     const configJsonPath = process.cwd() + "/i18n.config.json";
-    let config = {...i18nStore.getConfig()};
+    let config = {...DotI18n.getConfig()};
     if (fs.pathExistsSync(configJsonPath)) {
         config = {...config, ...JSON.parse(fs.readFileSync(configJsonPath).toString())};
-        i18nStore.setConfig(config);
+        DotI18n.setConfig(config);
     }
 
     try {
@@ -17,7 +17,7 @@ function execute() {
         const outDir = process.cwd() + config.outDir + `/${filename}.js`;
         if (fs.pathExistsSync(outDir)) {
             const fileContent = require(outDir) || {};
-            i18nStore.setLocales(fileContent);
+            DotI18n.setLocales(fileContent);
         }
     } catch (error) {
         console.info(error);

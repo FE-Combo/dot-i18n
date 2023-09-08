@@ -2,7 +2,7 @@ import {parse} from "@babel/parser";
 import babelTraverse, {NodePath} from "@babel/traverse";
 import babelGenerator from "@babel/generator";
 import {expressionStatement, identifier, CallExpression, BlockStatement, ArrowFunctionExpression, FunctionDeclaration, JSXElement, JSXIdentifier, JSXAttribute, StringLiteral, stringLiteral, JSXText, importDeclaration, importDefaultSpecifier} from "@babel/types";
-import * as i18nStore from "./store";
+import DotI18n from "./";
 import {ASTContainer} from "./type";
 
 // 函数插入 context
@@ -11,16 +11,17 @@ export function astFunctionInsertContext(path: NodePath<FunctionDeclaration> | N
     // 只在顶层函数中插入 useLocales
     if (pathBody.scope.path.context.scope.block.type === "Program") {
         const container = pathBody.container as ASTContainer;
+        // 必须保证 return 必须为 JSXElement
         const returnStatementItem = container?.body?.body?.find?.((_) => _.type === "ReturnStatement");
         if (returnStatementItem && returnStatementItem.argument && (returnStatementItem.argument.type === "JSXElement" || returnStatementItem.argument.type === "JSXFragment")) {
-            pathBody.unshiftContainer("body" as any, expressionStatement(identifier("const _$$t = _$$I18nStore.useLocales()")));
+            pathBody.unshiftContainer("body" as any, expressionStatement(identifier("const _$$t = _$$DotI18n.useLocales()")));
         }
     }
 }
 
 export default function (context: string) {
     let nextContext = context;
-    if (nextContext.includes(`<i18n`) || nextContext.includes(`i18n(`)) {
+    if (nextContext.includes("<i18n") || nextContext.includes("i18n(")) {
         const ast = parse(nextContext, {
             sourceType: "module",
             plugins: ["typescript", "jsx"],
@@ -28,7 +29,7 @@ export default function (context: string) {
         babelTraverse(ast, {
             // @babel/types/lib/index.d.ts => declare type Node
             Program(path) {
-                path.node.body.unshift(importDeclaration([importDefaultSpecifier(identifier("* as _$$I18nStore"))], process.env.DOT_I18N_DEV ? stringLiteral("../build/store") : stringLiteral("dot-i18n/build/store")));
+                path.node.body.unshift(importDeclaration([importDefaultSpecifier(identifier("_$$DotI18n"))], process.env.DOT_I18N_DEV ? stringLiteral("../build") : stringLiteral("dot-i18n")));
             },
             FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
                 astFunctionInsertContext(path);
@@ -40,7 +41,7 @@ export default function (context: string) {
                 // e.g: i18n("测试")
                 const container = (path.get("i18n") as NodePath<CallExpression>).container as ASTContainer;
                 if (!container.callee.object && container.callee.name === "i18n") {
-                    container.callee.name = `_$$I18nStore.t`;
+                    container.callee.name = `_$$DotI18n.t`;
                     const containerArguments = container.arguments;
                     if (containerArguments.length === 1) {
                         containerArguments.push({type: "StringLiteral", value: "global"});
@@ -59,7 +60,7 @@ export default function (context: string) {
                     const namespace = (namespaceAttribute?.value as StringLiteral)?.value || "global";
                     const value = (jsxNode?.children?.[0] as JSXText)?.value;
                     if (value) {
-                        const code = i18nStore.encode(value);
+                        const code = DotI18n.encode(value);
                         if (code) {
                             openingElement.attributes = [];
                             (openingElement.name as JSXIdentifier).name = "";
