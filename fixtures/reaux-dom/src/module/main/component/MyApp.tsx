@@ -1,5 +1,5 @@
 import React from "react";
-import {testGlobalI18n} from "./index";
+import {testGlobalI18n} from "../utils";
 
 function Index() {
     return (

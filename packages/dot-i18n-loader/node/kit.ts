@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs-extra";
 import childProcess from "child_process";
-import {Config, defaultConfig} from "../";
+import {Config, defaultConfig} from "../store";
 
 export function spawn(command: string, params: string[]) {
     const isWindows = process.platform === "win32";
@@ -19,7 +19,7 @@ export function spawn(command: string, params: string[]) {
 }
 
 // 生成本地词条
-export function generateLocale(config: Config, languages: string[], result: object) {
+export function generateLocale(config: Config, languages: string[], result: Record<string, unknown>) {
     const outDir = config.outDir || defaultConfig.outDir;
     const filename = config.filename || defaultConfig.filename;
     fs.ensureDirSync(path.join(process.cwd(), outDir));

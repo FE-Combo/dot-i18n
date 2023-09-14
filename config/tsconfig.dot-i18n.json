@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "module": "esnext",
+    "baseUrl": "../packages/dot-i18n",
+    "outDir": "../build/dot-i18n",
+    "module": "commonjs",
     "target": "es5",
     "moduleResolution": "node",
-    "sourceMap": true,
     "jsx": "react",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2017"],
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
@@ -15,13 +15,9 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "inlineSources": true,
     "declaration": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@node/*": ["node/*"],
-    }
+    "skipLibCheck": true
   },
-  "include": ["."],
+  "include": ["../packages/dot-i18n"],
   "exclude": ["node_modules"]
 }

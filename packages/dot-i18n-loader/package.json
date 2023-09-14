@@ -1,0 +1,31 @@
+{
+  "name": "dot-i18n-loader",
+  "version": "1.0.0",
+  "description": "Multilingual solution for webpack loader.",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "author": "vocoWone",
+  "devDependencies": {
+    "@types/babel__generator": "^7.6.2",
+    "@types/babel__traverse": "^7.0.15",
+    "@types/fs-extra": "^9.0.3",
+    "@types/node": "^14.14.6",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.8",
+    "@types/shelljs": "^0.8.8",
+    "@types/lodash": "^4.14.191"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.11.4",
+    "@babel/parser": "^7.11.4",
+    "@babel/traverse": "^7.12.5",
+    "@babel/types": "^7.11.0",
+    "fs-extra": "^9.0.1",
+    "lodash": "^4.17.21",
+    "shelljs": "^0.8.4",
+    "tslib": "^2.4.0",
+    "xlsx": "^0.16.6",
+    "xlsx-style": "^0.8.13"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": "..src",
-    "outDir": "../build/",
+    "baseUrl": "../packages/dot-i18n-loader",
+    "outDir": "../build/dot-i18n-loader",
     "module": "commonjs",
     "target": "es5",
     "moduleResolution": "node",
@@ -14,11 +14,10 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
-    "suppressImplicitAnyIndexErrors": true,
     "esModuleInterop": true,
     "declaration": true,
     "skipLibCheck": true
   },
-  "include": ["../src"],
+  "include": ["../packages/dot-i18n-loader"],
   "exclude": ["node_modules"]
 }

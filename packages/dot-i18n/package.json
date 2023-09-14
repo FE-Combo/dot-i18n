@@ -1,0 +1,13 @@
+{
+  "name": "dot-i18n",
+  "version": "1.0.0",
+  "description": "Multilingual solution.",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "author": "vocoWone",
+  "devDependencies": {
+    "@types/react": "^16.9.11",
+    "react": "^16.9.0"
+  }
+}

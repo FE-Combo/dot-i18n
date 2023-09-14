@@ -1,6 +1,6 @@
 import "./initialize";
 import fs from "fs-extra";
-import DotI18n, { defaultConfig } from "../";
+import Store, { defaultConfig } from "../store";
 import path from "path";
 import {ls} from "shelljs";
 import {parse} from "@babel/parser";
@@ -16,7 +16,7 @@ interface MutationResultOptions {
     value?: string;
 }
 
-let result = {};
+let result: Record<string, any> = {};
 
 function mutationResult(options: MutationResultOptions) {
     const {language = "zh", namespace = "global", value} = options;
@@ -27,7 +27,7 @@ function mutationResult(options: MutationResultOptions) {
         result[language][namespace] = {};
     }
     if (value && !Object.values(result[language][namespace]).includes(value)) {
-        result[language][namespace][DotI18n.encode(value)] = value;
+        result[language][namespace][Store.encode(value)] = value;
     }
 }
 
@@ -44,7 +44,7 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
                 });
                 babelTraverse(ast, {
                     CallExpression(path: NodePath<CallExpression>) {
-                        const i18nContainer = (path.get("i18n") as NodePath<CallExpression>).container as ASTContainer;
+                        const i18nContainer = (path.get("i18n") as NodePath<CallExpression>).container as unknown as ASTContainer;
                         if (!i18nContainer.callee.object && i18nContainer.callee.name === "i18n") {
                             const containerArguments = i18nContainer.arguments;
                             const value = containerArguments?.[0]?.value?.toString()?.trim();
@@ -77,11 +77,11 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
 
 // 扫描项目下所有文案，并在本地生成ts
 function generate() {
-    const config = DotI18n.getConfig();
+    const config = Store.getConfig();
     const languages = config?.languages || defaultConfig.languages;
     const baseUrl = config?.baseUrl || defaultConfig.baseUrl;
     // 项目现有 locales
-    const currentLocales = DotI18n.getLocales();
+    const currentLocales = Store.getLocales();
 
     // 扫描项目多语言
     analyzeLocale(baseUrl, languages);

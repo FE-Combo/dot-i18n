@@ -2,19 +2,27 @@ import "./initialize";
 import "colors";
 import fs from "fs-extra";
 import XLSX from "xlsx";
-import DotI18n from "../";
+import Store from "../store";
 import {EXCELSheet} from "../type";
 const XLSXStyle = require("xlsx-style");
 // 原生的 xlsx 不支持表格的样式设置, 选择使用 xlsx-style 可以设置表格样式
 
+function isObject(item: Array<EXCELSheet> | Record<string, any>): item is Record<string, any> {
+    return item instanceof Object && !Array.isArray(item);
+}
+
+function isArray(item: Array<EXCELSheet> | Record<string, any>): item is Array<EXCELSheet> {
+    return Array.isArray(item);
+}
+
 // 本地ts转换成excel（导出excel便于翻译）
 function execute() {
-    const config = DotI18n.getConfig();
+    const config = Store.getConfig();
     const languages = config?.languages;
-    const allLocales = DotI18n.getLocales() || {};
+    const allLocales = Store.getLocales() || {};
     const data = [] as EXCELSheet[];
-    const recursion = (item: Array<EXCELSheet> | object, codes: Array<number | string>) => {
-        if (item instanceof Array) {
+    const recursion = (item: Array<EXCELSheet> | Record<string, any>, codes: Array<number | string>) => {
+        if (isArray(item)) {
             item.forEach((_, index) => {
                 if (typeof _ === "object") {
                     recursion(_, [...codes, index]);
@@ -36,8 +44,7 @@ function execute() {
                     }
                 }
             });
-        }
-        if (item instanceof Object) {
+        } else if (isObject(item)) {
             Object.keys(item).forEach((_) => {
                 if (typeof item[_] === "object") {
                     recursion(item[_], [...codes, _]);

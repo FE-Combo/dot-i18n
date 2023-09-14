@@ -2,15 +2,15 @@ import "./initialize";
 import path from "path";
 import XLSX from "xlsx";
 import {EXCELSheet} from "../type";
-import DotI18n from "../";
+import Store from "../store";
 import {spawn, generateLocale} from "./kit";
 
-let result = {};
+let result: Record<string, any> = {};
 
 // 翻译后将excel导入项目转换成ts
 function execute() {
-    const config = DotI18n.getConfig();
-    const allLocales = DotI18n.getLocales();
+    const config = Store.getConfig();
+    const allLocales = Store.getLocales();
     const languages = config?.languages;
     const prettierConfig = config?.prettierConfig;
     const outDir = config?.outDir;

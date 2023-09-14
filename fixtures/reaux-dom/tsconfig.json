@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "esnext",
-    "target": "es5",
+    "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
     "jsx": "react",
@@ -20,7 +20,8 @@
     "skipLibCheck": true,
     "paths": {
       "@node/*": ["node/*"],
-    }
+    },
+    "typeRoots": ["./node_modules/@types/", "./global.d.ts"]
   },
   "include": ["."],
   "exclude": ["node_modules"]
