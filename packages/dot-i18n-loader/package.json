@@ -1,6 +1,6 @@
 {
   "name": "dot-i18n-loader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Multilingual solution for webpack loader.",
   "main": "index.js",
   "module": "index.js",
