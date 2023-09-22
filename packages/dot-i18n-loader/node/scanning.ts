@@ -51,7 +51,7 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
                             const language = languages?.[0];
                             let namespace = "global";
                             if(containerArguments?.[1]) {
-                                const nextNamespace = (((containerArguments[1] as ObjectExpression).properties?.find(_=>((_ as ObjectProperty)?.key as Identifier)?.name === "namespace") as ObjectProperty)?.value as StringLiteral)?.value;
+                                const nextNamespace = (((containerArguments[1] as ObjectExpression).properties?.find( _ => (((_ as ObjectProperty)?.key as Identifier)?.name || ((_ as ObjectProperty)?.key as StringLiteral)?.value) === "namespace" ) as ObjectProperty)?.value as StringLiteral)?.value;
                                 if(nextNamespace) {
                                     namespace = nextNamespace
                                 }
