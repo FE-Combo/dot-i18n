@@ -61,7 +61,7 @@ export default function (context: string) {
                     const attributes = openingElement.attributes as JSXAttribute[];
                     const namespaceAttribute = attributes.find((_) => _.name.name === "namespace")!;
                     const namespace = (namespaceAttribute?.value as StringLiteral)?.value || "global";
-                    const value = (jsxNode?.children?.[0] as JSXText)?.value;
+                    const value = (jsxNode?.children?.[0] as JSXText)?.value?.trim?.();
                     if (value) {
                         const code = Store.encode(value)
                         if (code) {

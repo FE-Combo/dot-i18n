@@ -4,7 +4,7 @@ import Store, { defaultConfig } from "../store";
 import path from "path";
 import {ls} from "shelljs";
 import {parse} from "@babel/parser";
-import {JSXElement, CallExpression, JSXIdentifier, JSXAttribute, StringLiteral, JSXText} from "@babel/types";
+import {JSXElement, CallExpression, JSXIdentifier, JSXAttribute, StringLiteral, JSXText, ObjectExpression, ObjectProperty, Identifier} from "@babel/types";
 import {ASTContainer} from "../type";
 import babelTraverse, {NodePath} from "@babel/traverse";
 import lodash from "lodash";
@@ -49,7 +49,13 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
                             const containerArguments = i18nContainer.arguments;
                             const value = containerArguments?.[0]?.value?.toString()?.trim();
                             const language = languages?.[0];
-                            const namespace = containerArguments?.[2]?.value;
+                            let namespace = "global";
+                            if(containerArguments?.[1]) {
+                                const nextNamespace = (((containerArguments[1] as ObjectExpression).properties?.find(_=>((_ as ObjectProperty)?.key as Identifier)?.name === "namespace") as ObjectProperty)?.value as StringLiteral)?.value;
+                                if(nextNamespace) {
+                                    namespace = nextNamespace
+                                }
+                            }
                             mutationResult({language, namespace, value});
                         }
                     },
@@ -62,7 +68,7 @@ function analyzeLocale(baseUrl: string, languages: string[]) {
                             const namespace = (namespaceAttribute?.value as StringLiteral)?.value;
                             if (jsxNode.children.length === 1) {
                                 const language = languages?.[0];
-                                const value = (jsxNode.children[0] as JSXText).value;
+                                const value = (jsxNode.children[0] as JSXText).value?.trim?.();
                                 mutationResult({language, namespace, value});
                             }
                         }

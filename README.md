@@ -6,21 +6,20 @@
 - 便携式 ts/excel 转换
 
 ## 约定
-- 切换语种时需要重新刷新整个网站
-- 基于 react + typescript 项目
-- 出现多语言配置不生效，重新生成扫描项目并重启项目
-- i18n 作为该库的关键字，且只能在 LocaleProvider 组件下使用
-- 不允许在全局变量中挂载`i18n`。e.g: window.i18n = (text: string) => text
-- 尽量使用 xml`<i18n>test</i18n>`的方式，少使用 function`i18n("test")`，前者性能优于后者
-- 目前只支持 hooks，且只能在组件内只用；无法应用于自定义hooks中，只能在返回类型为`JSXElement`的hooks中使用
-- 文案中不允许存在变量，若出现变量只能使用 function 方式解决`i18n("test{v}",{replace:{"{v}":i18n("变量")}})`
-- 修改文案不能直接修改 locales 配置，因为文案与key是一一对应的；所以需要修改项目中i18n所对应的文案，并重新走scanning流程
-- 如果您的系统使用了 webpack 5+，那么需要添加 ProvidePlugin 到 plugins：
+- 项目基于 React 和 TypeScript 构建。
+- 在使用多语言功能时，关键字为 `i18n`，且只能在 `DotI18N.Provider` 组件下使用。
+- 不允许在全局变量中挂载 `i18n`。e.g: window.i18n = (text: string) => text。
+- 尽量多使用 XML 形式 <i18n>test</i18n>，而不是函数调用 i18n("test")。前者性能更好，但后者更灵活。
+- 如果文本中包含变量，必须使用以下方式解决：
+  ```js
+    i18n("test{v}", { replace: { "{v}": i18n("变量") } })。
+  ```
+- 目前只支持在组件内使用 React Hooks，不能在自定义 Hooks 中使用；只能在返回类型为 JSX.Element 的 Hooks 中使用。
+- 如果您的项目使用了 Webpack 5+，请确保添加以下代码到 "plugins" 中的 "ProvidePlugin" 部分：
   ```
   plugins: [
-    ...,
+    ...prePlugins,
     new webpack.ProvidePlugin({
-      process: 'process/browser',
       Buffer: ['buffer', 'Buffer']
     }),
     ...
@@ -28,68 +27,134 @@
   ```
 
 
-## 如何使用
+## 如何使用（以create-react-app为例）
+1. 初始化项目
+    ```bash
+        npx create-react-app dot-i18n-demo --template typescript
+    ```
 
-- yarn add dot-i18n --save
-- yarn add dot-i18n-loader --dev
-- 项目根目录下创建 i18n.config.json
-  - baseUrl: string `多语言使用范围. default: /src`
-  - outDir: string `多语言词条最终生成路径. default: /src/locales`
-  - filename: string `多语言词条最终生成文件名. default: index`
-  - exportExcelPath: string `excel导出路径. default: /.i18n/result.xlsx`
-  - importExcelPath: string `excel导入路径. default: /.i18n/result.xlsx`
-  - languages: string[] `语种, 数组第一个参数为第一语种. default:["zh","en]`
-  - prettierConfig: prettier 文件路径, 使用前请确保项目已经安装 prettier
-  - clearLegacy: 是否清除遗留字段（只清除无用主语言词条）
-- 创建 locales 目录: package.json 中新增 script `"locales": "node ./node_modules/dot-i18n/build/scanning"`并执行`yarn locales`
-- webpack 中新增 loader
-  ```
-  {
-    test: /\.(ts|tsx)$/,
-    exclude: /node_modules/,
-    use: { loader: 'dot-i18n-loader' },
-  },
-  ```
-- 项目 root 导入 Provider
+2. 安装所需依赖
+    ```bash
+        cd dot-i18n-demo
+        yarn eject
+        yarn add dot-i18n --save 
+        yarn add dot-i18n-loader --dev
+    ```
 
-  ```
-    import DotI18N from "dot-i18n";
-    const locales = require("./locales")
-
-    <DotI18N.Provider locale={locales.zh}>
-        test
-    </DotI18N.Provider>
-  ```
-
-- 配置 tsconfig
-
-```
-// xxx/index.d.ts
-import("dot-i18n/global")
-
-// tsconfig.js
+3. 根目录创建i18n.config.json
+```json
 {
-  "compilerOptions": {
-    "typeRoots": ["xxx/index.d.ts"],
-  },
-  "exclude": ["node_modules"]
-}
-
+    "baseUrl": "/src/", // 项目根目录
+    "outDir": "/src/locales", // 词条输出目录
+    "filename": "index", // 词条文件名
+    "exportExcelPath": "/.i18n/result.xlsx", // 词条导出excel路径
+    "importExcelPath": "/.i18n/result.xlsx", // 词条导入excel路径
+    "languages": ["zh", "en"] // 词条语种，数组[0]代表第一语种
+  }
+  
 ```
 
-- 应用中直接使用`i18n("名字")`或者`<i18n>名字</i18n>`进行多语言配置
+4. package.json 中添加相应的脚本
+```json
+  "scripts": {
+    "ts2excel": "node ./node_modules/dot-i18n-loader/node/ts2excel", // 初始化 locales 文件或扫描词条
+    "excel2ts": "node ./node_modules/dot-i18n-loader/node/excel2ts", // 将 locales 中的词条导出到 excel 中
+    "scanning": "node ./node_modules/dot-i18n-loader/node/scanning" // 将 excel 中的词条导入到 locales 中
+  },
+```
+5. 配置Webpack Loader
+```js
+    [
+        ...loaders,
+        {
+        test: /\.(tsx|ts)$/,
+        exclude: /node_modules/,
+        use: { loader: 'dot-i18n-loader' }
+        }
+    ]
+```
+如果使用 Webpack 5+，还需配置额外的插件
+```js
+[
+    ...plugins,
+    new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer']
+    }),
+]
+```
 
-- 词条扫描(项目->ts)
-  - package.json 中新增 script `"scanning": "node ./node_modules/dot-i18n-loader/node/scanning"`并执行`yarn scanning`
-  - 源文件路径为 i18n.config.json 的 baseUrl, 目标文件路径为 i18n.config.json 的 outDir
+6. 初始化词条，执行 `yarn scanning` 初始化 locales 文件
 
-- 词条导出(ts->excel)
-  - package.json 中新增 script `"ts2excel": "node ./node_modules/dot-i18n-loader/node/ts2excel"`并执行`yarn ts2excel`
-  - 源文件路径为 i18n.config.json 的 outDir, 目标文件路径为 i18n.config.json 的 exportExcelPath
+7. 在根组件中使用 DotI18N.Provider 包裹您的应用
+``` typescript
+    // index.tsx
+    import DotI18N from "dot-i18n";
+    import locales from "../locales";
 
-- 词条导入(excel->ts)
-  - package.json 中新增 script `"excel2ts": "node ./node_modules/dot-i18n-loader/node/excel2ts"`并执行`yarn excel2ts`
-  - 源文件路径为 i18n.config.json 的 importExcelPath, 目标文件路径为 i18n.config.json 的 outDir
+    <DotI18N.Provider locales={locales.zh}>
+        <App />
+    </DotI18N.Provider>
+```
+
+8. 在 tsconfig.json 中导入相关类型
+```js
+    // global.d.ts
+    import("dot-i18n/global")
+
+    // tsconfig.js
+    {
+    "compilerOptions": {
+        "typeRoots": ["./node_modules/@types/", "./global.d.ts"],
+    },
+    "exclude": ["node_modules"]
+    }
+```
+
+9. 在项目中编写多语言文本
+```typescript
+    // App.tsx
+    import logo from './logo.svg';
+    import './App.css';
+
+    function App() {
+    return (
+        <div className="App">
+        <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <div>
+                <i18n>我是xml形式多语言词条，性能更优</i18n>
+            </div>
+            <div>
+                {i18n("我是函数式多语言词条，使用更灵活")}
+            </div>
+            -------------------------------------------
+            <div>
+                <i18n namespace="my">我有自己的命名空间</i18n>
+            </div>
+            <div>
+                {i18n("我也有自己的命名空间", {namespace: "ym"})}
+            </div>
+            -------------------------------------------
+            <div>
+                <i18n>我不支持变量</i18n>
+            </div>
+            <div>
+                {i18n("但是我支持变量{value}", {replace: {"{value}": "--新值--"}})}
+            </div>
+        </header>
+        </div>
+    );
+    }
+
+    export default App;
+```
+
+10. 翻译流程如下：
+    - 执行 yarn scanning（词条扫描）：项目中的词条收集到 locales 中
+    - 执行 yarn ts2excel（词条导出excel）：将 locales 中的词条导出到 excel 中
+    - 执行yarn excel2ts（词条导入）：将 excel 中翻译好的词条导入到 locales 中
+
+通过以上配置和步骤，您可以在项目中轻松使用多语言功能。如果想查看完整的示例代码，请访问 [dot-i18n-demo](https://github.com/vocoWone/dot-i18n-demo)
 
 ## Q&A
 
@@ -127,9 +192,11 @@ const Index = (props: IProps) => {
 
 - A: 1.decorators检查是否配置正确；2.检查非jsx函数中是否使用了`i18n`
 
-## TODO
+- Q: 项目启动时报错 `Uncaught ReferenceError: Buffer is not defined`
 
+- A: 检测项目中是否配置 webpack plugin `ProvidePlugin`，若配置完还是不生效请删除 `node_modules` 与 `yarn.lock` 重新安装
+
+## TODO
 - 支持类组件
-- 开发环境性能瓶颈检测
 - css （伪类）多语言处理
-- 非jsx使用i18n
+- 非 jsx 支持多语言配置

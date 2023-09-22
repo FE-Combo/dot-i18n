@@ -7,9 +7,9 @@
     "dev": "yarn move && node start.js",
     "dev:debug": "yarn move && DOT_I18N_DEBUG=1 node start.js",
     "move": "rm -rf ./node_modules/dot-i18n && cp -r ../../build/dot-i18n ./node_modules && rm -rf ./node_modules/dot-i18n-loader &&  cp -r ../../build/dot-i18n-loader ./node_modules",
-    "ts2excel": "node ./node_modules/dot-i18n-loader/node/ts2excel.js",
-    "excel2ts": "node ./node_modules/dot-i18n-loader/node/excel2ts.js",
-    "scanning": "node ./node_modules/dot-i18n-loader/node/scanning.js"
+    "ts2excel": "yarn move && node ./node_modules/dot-i18n-loader/node/ts2excel.js",
+    "excel2ts": "yarn move && node ./node_modules/dot-i18n-loader/node/excel2ts.js",
+    "scanning": "yarn move && node ./node_modules/dot-i18n-loader/node/scanning.js"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
